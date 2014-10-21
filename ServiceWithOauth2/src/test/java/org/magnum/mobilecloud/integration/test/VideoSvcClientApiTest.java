@@ -1,18 +1,16 @@
 package org.magnum.mobilecloud.integration.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.*;
 
 import java.util.Collection;
 import java.util.UUID;
 
 import org.junit.Test;
+import org.magnum.mobilecloud.repositories.Video;
 import org.magnum.mobilecloud.video.TestData;
 import org.magnum.mobilecloud.video.client.SecuredRestBuilder;
 import org.magnum.mobilecloud.video.client.SecuredRestException;
 import org.magnum.mobilecloud.video.client.VideoSvcApi;
-import org.magnum.mobilecloud.video.repository.Video;
 
 import retrofit.RestAdapter.LogLevel;
 import retrofit.RetrofitError;

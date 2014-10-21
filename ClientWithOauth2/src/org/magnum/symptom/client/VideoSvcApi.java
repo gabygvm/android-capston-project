@@ -1,8 +1,7 @@
-package org.magnum.mobilecloud.video.client;
+package org.magnum.symptom.client;
 
 import java.util.Collection;
 
-import org.magnum.mobilecloud.repositories.Video;
 
 import retrofit.http.Body;
 import retrofit.http.GET;

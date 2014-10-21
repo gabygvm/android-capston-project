@@ -24,9 +24,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.magnum.mobilecloud.repositories.Video;
+import org.magnum.mobilecloud.repositories.VideoRepository;
 import org.magnum.mobilecloud.video.client.VideoSvcApi;
-import org.magnum.mobilecloud.video.repository.Video;
-import org.magnum.mobilecloud.video.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
