@@ -5,6 +5,9 @@
     android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.camera"
+                  android:required="true" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -34,7 +37,8 @@
         </activity>
         <activity
             android:name="org.magnum.symptom.client.CheckInActivity"
-            android:label="@string/title_activity_check_in" >
+            android:label="@string/title_activity_check_in" 
+            >
         </activity>
     </application>
 

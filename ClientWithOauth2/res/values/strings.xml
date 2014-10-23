@@ -15,7 +15,8 @@
     <string name="check_in">Check-In</string>
     <string name="alarms">Alarms</string>
     <string name="patients">Patients</string>
-
+    <string name="changePic">Edit</string>
+    
     <color name="royal_blue">#2B60DE</color>
     <color name="jeans_blue">#A0CFEC</color>
     <color name="light_blue">#ADDFFF</color>

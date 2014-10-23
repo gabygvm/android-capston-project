@@ -15,14 +15,14 @@
         style="@style/AppTheme"
         android:layout_width="100dp"
         android:layout_height="40dp"
-        android:layout_below="@+id/alarmsButton"
         android:layout_alignBaseline="@+id/recipeButton"
         android:layout_alignBottom="@+id/recipeButton"
         android:layout_alignLeft="@+id/alarmsButton"
         android:layout_alignStart="@+id/alarmsButton"
+        android:layout_below="@+id/alarmsButton"
         android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        android:text="@string/patients" />
+        android:text="@string/patients"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/checkInButton"
@@ -31,8 +31,6 @@
         android:layout_height="40dp"
         android:layout_above="@+id/recipeButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginEnd="25dp"
-        android:layout_marginRight="25dp"
         android:layout_toLeftOf="@+id/alarmsButton"
         android:layout_toStartOf="@+id/alarmsButton"
         android:text="@string/check_in" />
@@ -46,7 +44,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/checkInButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="41dp"
         android:text="@string/recipe"
         android:textColor="@color/royal_blue" />
 
@@ -58,5 +55,22 @@
         android:layout_alignTop="@+id/checkInButton"
         android:layout_centerHorizontal="true"
         android:text="@string/alarms" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="200dp"
+        android:layout_height="400dp"
+        android:src="@drawable/ic_launcher" />
+
+    <Button
+        android:id="@+id/changePicButton"
+        style="@style/AppTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView1"
+        android:layout_marginTop="24dp"
+        android:layout_toLeftOf="@+id/checkInButton"
+        android:layout_centerHorizontal="true"
+        android:text="@string/changePic" />
 
 </RelativeLayout>
