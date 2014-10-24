@@ -1,5 +1,6 @@
 package org.magnum.symptom.client;
 
+import org.magnum.symptom.reminder.ReminderActivity;
 import org.magnum.videoup.client.R;
 
 import android.app.Activity;
@@ -31,11 +32,20 @@ public class PatientActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {		
-				Intent myIntent = new Intent(PatientActivity.this, CheckInActivity.class);
-				startActivity(myIntent);
+				Intent checkInIntent = new Intent(PatientActivity.this, CheckInActivity.class);
+				startActivity(checkInIntent);
 			}
 		});
 		
+		Button reminderButton = (Button)findViewById(R.id.alarmsButton); 
+		reminderButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {		
+				Intent remiderIntent = new Intent(PatientActivity.this, ReminderActivity.class);
+				startActivity(remiderIntent);
+			}
+		});
 		
 		Button editImageButton = (Button)findViewById(R.id.changePicButton);
 		editImageButton.setOnClickListener(new OnClickListener() {
