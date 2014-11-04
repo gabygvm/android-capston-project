@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="org/magnum/symptoms/service/repository/Video.java|org/magnum/symptoms/service/repository/VideoRepository.java|org/magnum/symptoms/service/client/VideoSvcApi.java|org/magnum/symptoms/service/VideoController.java" kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry excluding="org/magnum/symptoms/service/test/AutoGradingTest.java|org/magnum/symptoms/service/TestData.java" kind="src" path="src/test/java"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

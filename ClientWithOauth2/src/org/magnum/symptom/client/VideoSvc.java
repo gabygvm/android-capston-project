@@ -16,7 +16,7 @@ import android.content.Intent;
 
 public class VideoSvc {
 
-	public static final String CLIENT_ID = "mobile";
+	public static final String CLIENT_ID = "userAndroid";//"mobile"
 
 	private static VideoSvcApi videoSvc_;
 
