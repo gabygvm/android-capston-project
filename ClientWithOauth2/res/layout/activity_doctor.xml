@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/light_blue"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="org.magnum.symptom.client.DoctorActivity" >
+
+    <TextView
+        android:id="@+id/NameTxtV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/imageView1"
+        android:layout_marginLeft="34dp"
+        android:layout_marginTop="52dp"
+        android:text="@string/name"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/LastNameTxtV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/NameTxtV"
+        android:layout_marginLeft="34dp"
+        android:text="@string/lastname"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/patientsButton"
+        style="@style/AppTheme"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/alarmsButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="21dp"
+        android:text="@string/patients" />
+
+    <TextView
+        android:id="@+id/BirthdayTxtV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/LastNameTxtV"
+        android:layout_below="@+id/LastNameTxtV"
+        android:text="@string/birthday"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/GenderTxtV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/LastNameTxtV"
+        android:layout_below="@+id/BirthdayTxtV"
+        android:text="@string/gender"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="200dp"
+        android:layout_height="400dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/LastNameTxtV"
+        android:src="@drawable/ic_launcher" />
+
+    <Button
+        android:id="@+id/changePicButton"
+        style="@style/AppTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView1"
+        android:layout_toRightOf="@+id/patientsButton"
+        android:text="@string/changePic" />
+
+</RelativeLayout>

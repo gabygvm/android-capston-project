@@ -1,19 +1,13 @@
 package org.magnum.symptom.client;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.Callable;
 
-import org.magnum.symptom.reminder.ReminderActivity;
 import org.magnum.videoup.client.R;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
@@ -25,51 +19,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PatientActivity extends Activity {
-
+public class DoctorActivity extends Activity {	
+	
 	static final int REQUEST_IMAGE_CAPTURE = 1;
 	private ImageView _imageView;
-	String mCurrentPhotoPath;
-	Bitmap imageBitmap;
+//	private String mCurrentPhotoPath;
+	private Bitmap imageBitmap;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_patient);
+		setContentView(R.layout.activity_doctor);
 		
 		_imageView = (ImageView) findViewById(R.id.imageView1);
-		
-		Button checkInLaunch = (Button)findViewById(R.id.checkInButton); 
-		checkInLaunch.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {		
-				Intent checkInIntent = new Intent(PatientActivity.this, CheckInActivity.class);
-				startActivity(checkInIntent);
-			}
-		});
-		
-		Button reminderButton = (Button)findViewById(R.id.alarmsButton); 
-		reminderButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {		
-				Intent remiderIntent = new Intent(PatientActivity.this, ReminderActivity.class);
-				startActivity(remiderIntent);
-			}
-		});
 		
 		Button editImageButton = (Button)findViewById(R.id.changePicButton);
 		editImageButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				dispatchTakePictureIntent();
 			}
 		});
 		
-		getPatientInfo();
+		getDoctorInfo();
 	}
 	
 	@Override
@@ -91,42 +64,39 @@ public class PatientActivity extends Activity {
 	}
 
 	
-	private void getPatientInfo()
+	private void getDoctorInfo()
 	{
 		final UserSvcApi svc = UserSvc.getOrShowLogin(this);
 		
 		if (svc != null)
 		{
-			CallableTask.invoke(new Callable<Patient>(){
+			CallableTask.invoke(new Callable<Doctor>(){
 			
 				@Override
-				public Patient call() throws Exception {
+				public Doctor call() throws Exception {
 					// TODO Auto-generated method stub
-					return svc.getPatientById(1);
+					return svc.getDoctorById(2);
 				}
 				
-			}, new TaskCallback<Patient>(){
+			}, new TaskCallback<Doctor>(){
 				
 				@Override
-				public void success(Patient patient) {
+				public void success(Doctor doctor) {
 					//Paint here the info.
 					TextView text = (TextView) findViewById(R.id.NameTxtV);
-					text.setText("Name: " + patient.getName());
+					text.setText("Name: " + doctor.getName());
 					
-					text = (TextView) findViewById(R.id.LastNameTxtV);
-					text.setText("Last Name: " + patient.getLastName());
+					TextView text1 = (TextView) findViewById(R.id.LastNameTxtV);
+					text1.setText("Last Name: " + doctor.getLastName());
 					
-					text = (TextView) findViewById(R.id.GenderTxtV);
-					if(patient.getIsFemale() == true)
-						text.setText("Gender: " + "Female");
+					TextView text2 = (TextView) findViewById(R.id.GenderTxtV);
+					if(doctor.getIsFemale() == true)
+						text2.setText("Gender: " + "Female");
 					else
-						text.setText("Gender: " + "Male");
+						text2.setText("Gender: " + "Male");
 					
-					text = (TextView) findViewById(R.id.BirthdayTxtV);
-					text.setText("Birthdate: " + patient.getBirthDate());
-					
-					text = (TextView) findViewById(R.id.MedicalRecordNameTxtV);
-					text.setText("Medical Record: " + Long.toString(patient.getId()));
+					TextView text3 = (TextView) findViewById(R.id.BirthdayTxtV);
+					text3.setText("Birthdate: " + doctor.getBirthDate());
 				}
 	
 				@Override
@@ -134,7 +104,7 @@ public class PatientActivity extends Activity {
 					Log.e(PatientActivity.class.getName(), "Error getting the user info.", e);
 					
 					Toast.makeText(
-							PatientActivity.this,
+							DoctorActivity.this,
 							"Failed Getting user info",
 							Toast.LENGTH_SHORT).show();
 				}
@@ -149,22 +119,10 @@ public class PatientActivity extends Activity {
 	    
 	    if (intentTakePic.resolveActivity(getPackageManager()) != null)
 	    {
-	    	// Create the File where the photo should go
-	     /*   File photoFile = null;
-	        try {
-	            photoFile = createImageFile();
-	        } 
-	        catch (IOException ex) {
-	            // Error occurred while creating the File
-	        }
-	        if (photoFile != null) {
-	        	//intentTakePic.putExtra(MediaStore.EXTRA_OUTPUT,
-	        */     //       Uri.fromFile(photoFile));
-	        	startActivityForResult(intentTakePic, REQUEST_IMAGE_CAPTURE);
-	        //}
+	       	startActivityForResult(intentTakePic, REQUEST_IMAGE_CAPTURE);
 	    }
 	}
-	private File createImageFile() throws IOException
+	/*private File createImageFile() throws IOException
 	{
 	    // Create an image file name
 	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -172,21 +130,27 @@ public class PatientActivity extends Activity {
 	    File storageDir = Environment.getExternalStoragePublicDirectory(
 	            Environment.DIRECTORY_PICTURES);
 	    File image = File.createTempFile(
-	        imageFileName,  /* prefix */
-	        ".jpg",         /* suffix */
-	        storageDir      /* directory */
+	        imageFileName,  // prefix
+	        ".jpg",         // suffix
+	        storageDir      // directory
 	    );
 
 	    // Save a file: path for use with ACTION_VIEW intents
 	    mCurrentPhotoPath = "file:" + image.getAbsolutePath();
 	    return image;
-	}
+	}*/
 	
 	
+	
+	
+	
+	
+	
+/*
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.patient, menu);
+		getMenuInflater().inflate(R.menu.doctor, menu);
 		return true;
 	}
 
@@ -200,5 +164,5 @@ public class PatientActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
+	}*/
 }

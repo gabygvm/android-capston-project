@@ -49,10 +49,55 @@ public class LoginScreenActivity extends Activity {
 	public void login() {
 		String user = userName_.getText().toString();
 		String pass = password_.getText().toString();
-		String server = server_.getText().toString();
+		String server = "https://192.168.56.1:8443";//server_.getText().toString();
 
-		final VideoSvcApi svc = VideoSvc.init(server, user, pass);
+		final UserSvcApi svc = UserSvc.init(server, user, pass);
+		
+		
+		CallableTask.invoke(new Callable<String>(){
+			
+			@Override
+			public String call() throws Exception {
+				// TODO Auto-generated method stub
+				return svc.getUserRole();
+			}
+			
+		}, new TaskCallback<String>(){
+			
+			@Override
+			public void success(String result) {
+				// OAuth 2.0 grant was successful and we
+				// can talk to the server, open up the video listing
 
+				if(result.equals("ROLE_PATIENT"))
+				{
+					startActivity(new Intent(
+						LoginScreenActivity.this,
+						PatientActivity.class));
+				}else if (result.equals("ROLE_DOCTOR"))
+				{
+					startActivity(new Intent(
+							LoginScreenActivity.this,
+							DoctorActivity.class));
+				}
+			}
+
+			@Override
+			public void error(Exception e) {
+				Log.e(LoginScreenActivity.class.getName(), "Error logging in via OAuth.", e);
+				
+				Toast.makeText(
+						LoginScreenActivity.this,
+						"Login failed, check your Internet connection and credentials.",
+						Toast.LENGTH_SHORT).show();
+			}
+		});
+		
+		
+		
+		
+		/*
+		
 		CallableTask.invoke(new Callable<Collection<Video>>() {
 
 			@Override
@@ -65,10 +110,7 @@ public class LoginScreenActivity extends Activity {
 			public void success(Collection<Video> result) {
 				// OAuth 2.0 grant was successful and we
 				// can talk to the server, open up the video listing
-	/*			startActivity(new Intent(
-						LoginScreenActivity.this,
-						VideoListActivity.class));
-	*/	
+
 				startActivity(new Intent(
 						LoginScreenActivity.this,
 						PatientActivity.class));
@@ -83,7 +125,7 @@ public class LoginScreenActivity extends Activity {
 						"Login failed, check your Internet connection and credentials.",
 						Toast.LENGTH_SHORT).show();
 			}
-		});
+		});*/
 	}
 
 }

@@ -24,6 +24,14 @@
     <string name="patients">Patients</string>
     <string name="changePic">Edit</string>
     
+    <string name="title_activity_doctor">DoctorActivity</string>
+    <string name="name">Name: </string>
+    <string name="lastname">Last Name: </string>
+    <string name="birthday">Birth Date: </string>
+    <string name="gender">Gender: </string>
+    <string name="medicalRecord">Medical Record: </string>
+    
+    
     <string name="title_activity_check_in">CheckInActivity</string>
     <string name="checkInText">CheckIn Actitivy</string>
     

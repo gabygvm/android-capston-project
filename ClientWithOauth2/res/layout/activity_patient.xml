@@ -10,19 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="org.magnum.symptom.client.PatientActivity" >
 
-    <Button
-        android:id="@+id/patientsButton"
-        style="@style/AppTheme"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_alignBaseline="@+id/recipeButton"
-        android:layout_alignBottom="@+id/recipeButton"
-        android:layout_alignLeft="@+id/alarmsButton"
-        android:layout_alignStart="@+id/alarmsButton"
-        android:layout_below="@+id/alarmsButton"
-        android:layout_centerHorizontal="true"
-        android:text="@string/patients"
-        android:visibility="gone" />
 
     <Button
         android:id="@+id/checkInButton"
@@ -60,17 +47,69 @@
         android:id="@+id/imageView1"
         android:layout_width="200dp"
         android:layout_height="400dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="24dp"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@+id/alarmsButton"
         android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:id="@+id/NameTxtV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/imageView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="66dp"
+        android:layout_marginTop="100dp"
+        android:text="@string/name"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
         android:id="@+id/changePicButton"
         style="@style/AppTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imageView1"
         android:layout_below="@+id/imageView1"
-        android:layout_marginTop="24dp"
-        android:layout_toLeftOf="@+id/checkInButton"
         android:layout_centerHorizontal="true"
+        android:layout_marginLeft="67dp"
         android:text="@string/changePic" />
+
+    <TextView
+        android:id="@+id/LastNameTxtV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/NameTxtV"
+        android:layout_below="@+id/NameTxtV"
+        android:text="@string/lastname"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/GenderTxtV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/LastNameTxtV"
+        android:layout_below="@+id/LastNameTxtV"
+        android:text="@string/gender"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/BirthdayTxtV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/GenderTxtV"
+        android:layout_below="@+id/GenderTxtV"
+        android:text="@string/birthday"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/MedicalRecordNameTxtV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/BirthdayTxtV"
+        android:layout_below="@+id/BirthdayTxtV"
+        android:text="@string/medicalRecord"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
