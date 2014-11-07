@@ -16,10 +16,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class User implements UserDetails {
 
 	public static UserDetails create(String username, String password,
-			String...authorities) {
+			String... authorities) {
 		return new User(username, password, authorities);
 	}
-	
+
 	private final Collection<GrantedAuthority> authorities_;
 	private final String password_;
 	private final String username_;
@@ -29,8 +29,7 @@ public class User implements UserDetails {
 		this(username, password, Collections.EMPTY_LIST);
 	}
 
-	private User(String username, String password,
-			String...authorities) {
+	private User(String username, String password, String... authorities) {
 		username_ = username;
 		password_ = password;
 		authorities_ = AuthorityUtils.createAuthorityList(authorities);

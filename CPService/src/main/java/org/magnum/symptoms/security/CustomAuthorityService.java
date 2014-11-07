@@ -15,10 +15,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class CustomAuthorityService implements UserDetailsService{
 	
-	@Autowired
-	PatientRepository patientRepo;
-	@Autowired
-	DoctorRepository doctorRepo;
+//	@Autowired
+//	PatientRepository patientRepo;
+//	@Autowired
+//	DoctorRepository doctorRepo;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username)
@@ -26,9 +26,9 @@ public class CustomAuthorityService implements UserDetailsService{
 		
 		UserDetails user = null;
 		
-		Collection<Patient> patientCollection = patientRepo.findByUsername(username);
-		Collection<Doctor> doctorCollection = doctorRepo.findByUsername(username);
-		
+	//	Collection<Patient> patientCollection = patientRepo.findByUsername(username);
+	//	Collection<Doctor> doctorCollection = doctorRepo.findByUsername(username);
+	/*	
 		if(patientCollection != null) //Then again... this must assume that the userName is unique...
 		{
 			List<Patient> list = new ArrayList<Patient>(patientCollection);
@@ -40,6 +40,6 @@ public class CustomAuthorityService implements UserDetailsService{
 			user = (Doctor) list.get(0);	
 		}
 		
-		return user;
+		*/return user;
 	}
 }
