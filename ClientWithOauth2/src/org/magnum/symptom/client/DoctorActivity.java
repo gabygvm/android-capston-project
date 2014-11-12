@@ -75,7 +75,7 @@ public class DoctorActivity extends Activity {
 				@Override
 				public Doctor call() throws Exception {
 					// TODO Auto-generated method stub
-					return svc.getDoctorById(2);
+					return svc.getDoctorInfo();
 				}
 				
 			}, new TaskCallback<Doctor>(){

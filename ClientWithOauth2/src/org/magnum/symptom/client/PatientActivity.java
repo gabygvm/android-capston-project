@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.Callable;
 
-import org.magnum.symptom.reminder.ReminderActivity;
+import org.magnum.symptom.client.reminder.ReminderActivity;
 import org.magnum.videoup.client.R;
 
 import android.app.Activity;
@@ -102,7 +102,7 @@ public class PatientActivity extends Activity {
 				@Override
 				public Patient call() throws Exception {
 					// TODO Auto-generated method stub
-					return svc.getPatientById(1);
+					return svc.getPatientInfo();
 				}
 				
 			}, new TaskCallback<Patient>(){

@@ -37,5 +37,8 @@
     
     <string name="title_activity_reminder">ReminderActivity</string>
     <string name="checkReminders">Please select the time for at least four daily Reminders</string>
-	<string name="setTime">Set Time</string>
+	<string name="setTime1">Set Reminder 1</string>
+	<string name="setTime2">Set Reminder 2</string>
+	<string name="setTime3">Set Reminder 3</string>
+	<string name="setTime4">Set Reminder 4</string>
 </resources>
