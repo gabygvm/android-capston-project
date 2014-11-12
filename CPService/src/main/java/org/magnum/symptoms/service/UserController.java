@@ -19,7 +19,7 @@
 package org.magnum.symptoms.service;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,14 +29,16 @@ import org.magnum.symptoms.service.repository.DoctorRepository;
 import org.magnum.symptoms.service.repository.Patient;
 import org.magnum.symptoms.service.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import retrofit.http.GET;
 
 @Controller
 public class UserController {
@@ -46,6 +48,46 @@ public class UserController {
 	@Autowired
 	DoctorRepository doctorRepo;
 
+	@RequestMapping(value = UserSvcApi.ROLE_SVC_PATH, method = RequestMethod.GET)
+	public @ResponseBody String getUserRole(HttpServletResponse response) {
+		GrantedAuthority authority = null;
+		if(!SecurityContextHolder.getContext().getAuthentication().getAuthorities().isEmpty()) {
+			authority = (GrantedAuthority) SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0];
+		}
+
+		if (authority == null) {
+			SendError(response, 404);
+		}else
+			response.setStatus(HttpServletResponse.SC_OK);
+		
+		return authority.getAuthority();
+	}
+	@RequestMapping(value = UserSvcApi.USER_SVC_PATH, method = RequestMethod.GET)
+	public @ResponseBody String getUserUserName(HttpServletResponse response)
+	{
+		String username = null;
+		username = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		return username;
+	}
+	
+	
+	@RequestMapping(value = UserSvcApi.PATIENT_SVC_PATH, method = RequestMethod.GET)
+	public @ResponseBody Patient getPatientInfo(HttpServletResponse response)
+	{
+		String username = null;
+		username = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		List<Patient> patList = patientRepo.findByUsername(username);
+		
+		if(patList.size() > 0)
+		{
+			response.setStatus(HttpServletResponse.SC_OK);
+			return patList.get(0);
+		}
+		SendError(response, 404);
+		return null;
+	}
 	@RequestMapping(value = UserSvcApi.PATIENT_SVC_PATH + "/{id}", method = RequestMethod.GET)
 	public @ResponseBody Patient getPatientById(
 			@PathVariable(UserSvcApi.ID_PARAMETER) long id,
@@ -61,7 +103,30 @@ public class UserController {
 
 		return patient;
 	}
+	@RequestMapping(value = UserSvcApi.PATIENT_BY_USERNAME_SVC_PATH, method = RequestMethod.GET)
+	public @ResponseBody List<Patient> getPatientByUsername(
+			@RequestParam(UserSvcApi.USERNAME_PARAMETER) String username,
+			HttpServletResponse response)
+	{
+		return patientRepo.findByUsername(username);
+	}
 
+	@RequestMapping(value = UserSvcApi.DOCTOR_SVC_PATH, method = RequestMethod.GET)
+	public @ResponseBody Doctor getDoctorInfo(HttpServletResponse response)
+	{
+		String username = null;
+		username = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		List<Doctor> doctList = doctorRepo.findByUsername(username);
+		
+		if(doctList.size() > 0)
+		{
+			response.setStatus(HttpServletResponse.SC_OK);
+			return doctList.get(0);
+		}
+		SendError(response, 404);
+		return null;
+	}
 	@RequestMapping(value = UserSvcApi.DOCTOR_SVC_PATH + "/{id}", method = RequestMethod.GET)
 	public @ResponseBody Doctor getDoctorById(
 			@PathVariable(UserSvcApi.ID_PARAMETER) long id,
@@ -77,22 +142,15 @@ public class UserController {
 
 		return doctor;
 	}
-
-	@RequestMapping(value = UserSvcApi.USER_SVC_PATH, method = RequestMethod.GET)
-	public @ResponseBody String getUserRole(HttpServletResponse response) {
-		GrantedAuthority authority = null;
-		if(!SecurityContextHolder.getContext().getAuthentication().getAuthorities().isEmpty()) {
-			authority = (GrantedAuthority) SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0];
-		}
-
-		if (authority == null) {
-			SendError(response, 404);
-		}else
-			response.setStatus(HttpServletResponse.SC_OK);
-		
-		return authority.getAuthority();
+	@RequestMapping(value = UserSvcApi.DOCTOR_BY_USERNAME_SVC_PATH, method = RequestMethod.GET)
+	public @ResponseBody List<Doctor> getDoctorByUsername(
+			@RequestParam(UserSvcApi.USERNAME_PARAMETER) String username,
+			HttpServletResponse response)
+	{
+		return doctorRepo.findByUsername(username);
 	}
 
+	
 	private void SendError(HttpServletResponse response, int errorCode) {
 		try {
 			response.sendError(errorCode);

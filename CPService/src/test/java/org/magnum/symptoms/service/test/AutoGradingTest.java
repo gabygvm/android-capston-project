@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import io.magnum.autograder.junit.Rubric;
 
-import java.sql.Date;
+import java.util.List;
 
 import org.junit.Test;
 //import org.magnum.symptoms.service.TestData;
@@ -12,16 +12,10 @@ import org.magnum.symptoms.service.client.SecuredRestBuilder;
 import org.magnum.symptoms.service.client.UserSvcApi;
 import org.magnum.symptoms.service.repository.Doctor;
 import org.magnum.symptoms.service.repository.Patient;
-import org.springframework.security.oauth2.common.util.JsonDateDeserializer;
-import org.springframework.security.oauth2.common.util.JsonDateSerializer;
 
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 import retrofit.client.ApacheClient;
-import retrofit.converter.GsonConverter;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * A test for the Asgn2 video service
@@ -54,21 +48,10 @@ public class AutoGradingTest {
 
 	private final String CLIENT_ID = "userAndroid";
 
-/*	GsonBuilder gsonBuilder = new GsonBuilder()
-	.registerTypeAdapter(Date.class, new JsonDateSerializer());
-	 
-	Gson gson = gsonBuilder.create();
-*/	
-	/*Gson gson = new GsonBuilder()
-	 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")//"yyyy-MM-dd'T'HH:mm:ss"
-	 .create(); .setConverter(new GsonConverter(gson))*/
-	 
 	private UserSvcApi readWriteVideoSvcUser1 = new SecuredRestBuilder()
-//			.setConverter(new GsonConverter(gson))
 			.setClient(new ApacheClient(UnsafeHttpsClient.createUnsafeClient()))
 			.setEndpoint(TEST_URL)
 			.setLoginEndpoint(TEST_URL + UserSvcApi.TOKEN_PATH)
-			// .setLogLevel(LogLevel.FULL)
 			.setUsername(USERNAME1).setPassword(PASSWORD1)
 			.setClientId(CLIENT_ID).build().create(UserSvcApi.class);
 
@@ -76,11 +59,8 @@ public class AutoGradingTest {
 			.setClient(new ApacheClient(UnsafeHttpsClient.createUnsafeClient()))
 			.setEndpoint(TEST_URL)
 			.setLoginEndpoint(TEST_URL + UserSvcApi.TOKEN_PATH)
-			// .setLogLevel(LogLevel.FULL)
 			.setUsername(USERNAME2).setPassword(PASSWORD2)
 			.setClientId(CLIENT_ID).build().create(UserSvcApi.class);
-
-	// private Video video = TestData.randomVideo();
 
 	@Rubric(value = "Video data is preserved", goal = "The goal of this evaluation is to ensure that your Spring controller(s) "
 			+ "properly unmarshall Video objects from the data that is sent to them "
@@ -97,18 +77,25 @@ public class AutoGradingTest {
 		String patReceived = readWriteVideoSvcUser1.getUserRole();
 		assertEquals("ROLE_PATIENT", patReceived);
 	}
-
 	@Test
 	public void testGetUserRole_Doctor() throws Exception {
 		String docReceived = readWriteVideoSvcUser2.getUserRole();
 		assertEquals("ROLE_DOCTOR", docReceived);
 	}
-
 	@Test
-	public void testGetPatientData() throws Exception {
+	public void testGetUserUserName() throws Exception {
 
-		Date birthday4 = new Date(1984, 04, 14);
-		Patient patReceived = readWriteVideoSvcUser1.getPatientById(4);
+		String username1 = readWriteVideoSvcUser1.getUserUserName();	
+		String username2 = readWriteVideoSvcUser2.getUserUserName();
+		
+		assertEquals("patient04", username1);
+		assertEquals("doctor02", username2);
+	}
+	
+	@Test
+	public void testGetPatientInfo() throws Exception {
+		
+		Patient patReceived = readWriteVideoSvcUser1.getPatientInfo();
 		assertEquals(4, patReceived.getId());
 		assertEquals("Name04", patReceived.getName());
 		assertEquals("LastName04", patReceived.getLastName());
@@ -116,9 +103,29 @@ public class AutoGradingTest {
 		assertTrue(patReceived.getIsFemale() == true);
 	}
 	@Test
-	public void testGetDoctorData() throws Exception {
+	public void testGetDoctoInfo() throws Exception {
 
-		Date birthday4 = new Date(1984, 04, 14);
+		Doctor docReceived = readWriteVideoSvcUser2.getDoctorInfo();
+		assertEquals(2, docReceived.getId());
+		assertEquals("DocName02", docReceived.getName());
+		assertEquals("DocLastName02", docReceived.getLastName());
+		assertEquals("12-02-1982", docReceived.getBirthDate());
+		assertTrue(docReceived.getIsFemale() == true);
+	}
+	
+	@Test
+	public void testGetPatientDataFromId() throws Exception {
+		
+		Patient patReceived = readWriteVideoSvcUser1.getPatientById(3);
+		assertEquals(3, patReceived.getId());
+		assertEquals("Name03", patReceived.getName());
+		assertEquals("LastName03", patReceived.getLastName());
+		assertEquals("13-03-1983", patReceived.getBirthDate());
+		assertTrue(patReceived.getIsFemale() == false);
+	}
+	@Test
+	public void testGetDoctorDataFromId() throws Exception {
+
 		Doctor docReceived = readWriteVideoSvcUser2.getDoctorById(2);
 		assertEquals(2, docReceived.getId());
 		assertEquals("DocName02", docReceived.getName());
@@ -126,251 +133,29 @@ public class AutoGradingTest {
 		assertEquals("12-02-1982", docReceived.getBirthDate());
 		assertTrue(docReceived.getIsFemale() == true);
 	}
+	@Test
+	public void testGetPatientDataFromUserName() throws Exception {
+		
+		List<Patient> patListReceived = readWriteVideoSvcUser1.getPatientByUsername("patient05");
+		Patient patReceived = patListReceived.get(0);
+		
+		assertEquals(5, patReceived.getId());
+		assertEquals("Name05", patReceived.getName());
+		assertEquals("LastName05", patReceived.getLastName());
+		assertEquals("15-05-1985", patReceived.getBirthDate());
+		assertTrue(patReceived.getIsFemale() == true);
+	}
+	@Test
+	public void testGetDoctorDataFromUserName() throws Exception {
 
-	/*
-	 * @Rubric(value = "The list of videos is updated after an add", goal =
-	 * "The goal of this evaluation is to ensure that your Spring controller(s) "
-	 * + "can add videos to the list that is stored in memory on the server." +
-	 * " The test also ensure that you properly return a list of videos" +
-	 * " as JSON.", points = 20.0, reference =
-	 * "This test is derived from the material in these videos: " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/61 " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/97 " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/99 ")
-	 * 
-	 * @Test public void testAddGetVideo() throws Exception {
-	 * readWriteVideoSvcUser1.addVideo(video); Collection<Video> stored =
-	 * readWriteVideoSvcUser1.getVideoList();
-	 * assertTrue(stored.contains(video)); }
-	 * 
-	 * @Rubric(value = "Requests without authentication token are denied.", goal
-	 * =
-	 * "The goal of this evaluation is to ensure that your Spring application "
-	 * + "properly authenticates queries using the OAuth Password Grant flow." +
-	 * "Any query that does not contain the correct authorization token" +
-	 * "should be denied with a 401 error.", points = 20.0, reference =
-	 * "This test is derived from the material in these videos: " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/117 " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/127 " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/123 ")
-	 * 
-	 * @Test public void testDenyVideoAddWithoutOAuth() throws Exception {
-	 * ErrorRecorder error = new ErrorRecorder();
-	 * 
-	 * // Create an insecure version of our Rest Adapter that doesn't know how
-	 * // to use OAuth. VideoSvcApi insecurevideoService = new
-	 * RestAdapter.Builder() .setClient( new
-	 * ApacheClient(UnsafeHttpsClient.createUnsafeClient()))
-	 * .setEndpoint(TEST_URL).setLogLevel(LogLevel.FULL)
-	 * .setErrorHandler(error).build().create(VideoSvcApi.class); try { // This
-	 * should fail because we haven't logged in!
-	 * insecurevideoService.addVideo(video);
-	 * 
-	 * fail(
-	 * "Yikes, the security setup is horribly broken and didn't require the user to authenticate!!"
-	 * );
-	 * 
-	 * } catch (Exception e) { // Ok, our security may have worked, ensure that
-	 * // we got a 401 assertEquals(HttpStatus.SC_UNAUTHORIZED, error.getError()
-	 * .getResponse().getStatus()); }
-	 * 
-	 * // We should NOT get back the video that we added above!
-	 * Collection<Video> videos = readWriteVideoSvcUser1.getVideoList();
-	 * assertFalse(videos.contains(video)); }
-	 * 
-	 * @Rubric(value =
-	 * "A user can like/unlike a video and increment/decrement the like count",
-	 * goal =
-	 * "The goal of this evaluation is to ensure that your Spring application "
-	 * +
-	 * "allows users to like/unlike videos using the /video/{id}/like endpoint, and"
-	 * + "and the /video/{id}/unlike endpoint." +
-	 * "Once a user likes/unlikes a video, the count of users that like that video"
-	 * + "should be incremented/decremented.", points = 20.0, reference =
-	 * "This test is derived from the material in these videos: " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/99 " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/121 ")
-	 * 
-	 * @Test public void testLikeCount() throws Exception {
-	 * 
-	 * // Add the video Video v = readWriteVideoSvcUser1.addVideo(video);
-	 * 
-	 * // Like the video readWriteVideoSvcUser1.likeVideo(v.getId());
-	 * 
-	 * // Get the video again v =
-	 * readWriteVideoSvcUser1.getVideoById(v.getId());
-	 * 
-	 * // Make sure the like count is 1 assertTrue(v.getLikes() == 1);
-	 * 
-	 * // Unlike the video readWriteVideoSvcUser1.unlikeVideo(v.getId());
-	 * 
-	 * // Get the video again v =
-	 * readWriteVideoSvcUser1.getVideoById(v.getId());
-	 * 
-	 * // Make sure the like count is 0 assertTrue(v.getLikes() == 0); }
-	 * 
-	 * @Rubric(value =
-	 * "A user can like/unlike a video and be added to/removed from the \"liked by\" list."
-	 * , goal =
-	 * "The goal of this evaluation is to ensure that your Spring application "
-	 * +
-	 * "allows users to like/unlike videos using the /video/{id}/like endpoint"
-	 * + "and the /video/{id}/unlike endpoint." +
-	 * "Once a user likes/unlikes a video, the username should be added to/removed from the "
-	 * + "list of users that like that video.", points = 20.0, reference =
-	 * "This test is derived from the material in these videos: " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/99 " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/121 ")
-	 * 
-	 * @Test public void testLikedBy() throws Exception {
-	 * 
-	 * // Add the video Video v = readWriteVideoSvcUser1.addVideo(video);
-	 * 
-	 * // Like the video readWriteVideoSvcUser1.likeVideo(v.getId());
-	 * 
-	 * Collection<String> likedby =
-	 * readWriteVideoSvcUser1.getUsersWhoLikedVideo(v.getId());
-	 * 
-	 * // Make sure we're on the list of people that like this video
-	 * assertTrue(likedby.contains(USERNAME1));
-	 * 
-	 * // Have the second user like the video
-	 * readWriteVideoSvcUser2.likeVideo(v.getId());
-	 * 
-	 * // Make sure both users show up in the like list likedby =
-	 * readWriteVideoSvcUser1.getUsersWhoLikedVideo(v.getId());
-	 * assertTrue(likedby.contains(USERNAME1));
-	 * assertTrue(likedby.contains(USERNAME2));
-	 * 
-	 * // Unlike the video readWriteVideoSvcUser1.unlikeVideo(v.getId());
-	 * 
-	 * // Get the video again likedby =
-	 * readWriteVideoSvcUser1.getUsersWhoLikedVideo(v.getId());
-	 * 
-	 * // Make sure user1 is not on the list of people that liked this video
-	 * assertTrue(!likedby.contains(USERNAME1));
-	 * 
-	 * // Make sure that user 2 is still there
-	 * assertTrue(likedby.contains(USERNAME2)); }
-	 * 
-	 * @Rubric(value = "A user is only allowed to like a video once.", goal =
-	 * "The goal of this evaluation is to ensure that your Spring application "
-	 * + "restricts users to liking a video only once. " +
-	 * "This test simply attempts to like a video twice and then checks that " +
-	 * "the like count is only 1.", points = 20.0, reference =
-	 * "This test is derived from the material in these videos: " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/99 " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/121" )
-	 * 
-	 * @Test public void testLikingTwice() throws Exception {
-	 * 
-	 * // Add the video Video v = readWriteVideoSvcUser1.addVideo(video);
-	 * 
-	 * // Like the video readWriteVideoSvcUser1.likeVideo(v.getId());
-	 * 
-	 * // Get the video again v =
-	 * readWriteVideoSvcUser1.getVideoById(v.getId());
-	 * 
-	 * // Make sure the like count is 1 assertTrue(v.getLikes() == 1);
-	 * 
-	 * try { // Like the video again.
-	 * readWriteVideoSvcUser1.likeVideo(v.getId());
-	 * 
-	 * fail("The server let us like a video twice without returning a 400"); }
-	 * catch (RetrofitError e) { // Make sure we got a 400 Bad Request
-	 * assertEquals(400, e.getResponse().getStatus()); }
-	 * 
-	 * // Get the video again v =
-	 * readWriteVideoSvcUser1.getVideoById(v.getId());
-	 * 
-	 * // Make sure the like count is still 1 assertTrue(v.getLikes() == 1); }
-	 * 
-	 * @Rubric(value = "A user cannot like a non-existant video", goal =
-	 * "The goal of this evaluation is to ensure that your Spring application "
-	 * + "won't crash if a user attempts to like a non-existant video. " +
-	 * "This test simply attempts to like a non-existant video then checks " +
-	 * "that a 404 Not Found response is returned.", points = 20.0, reference =
-	 * "This test is derived from the material in these videos: " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/99 " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/121" )
-	 * 
-	 * @Test public void testLikingNonExistantVideo() throws Exception {
-	 * 
-	 * try { // Like the video again.
-	 * readWriteVideoSvcUser1.likeVideo(getInvalidVideoId());
-	 * 
-	 * fail(
-	 * "The server let us like a video that doesn't exist without returning a 404."
-	 * ); } catch (RetrofitError e) { // Make sure we got a 400 Bad Request
-	 * assertEquals(404, e.getResponse().getStatus()); } }
-	 * 
-	 * @Rubric(value = "A user can find a video by providing its name", goal =
-	 * "The goal of this evaluation is to ensure that your Spring application "
-	 * + "allows users to find videos by searching for the video's name.",
-	 * points = 20.0, reference =
-	 * "This test is derived from the material in these videos: " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/97 " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/99 ")
-	 * 
-	 * @Test public void testFindByName() {
-	 * 
-	 * // Create the names unique for testing. String[] names = new String[3];
-	 * names[0] = "The Cat"; names[1] = "The Spoon"; names[2] = "The Plate";
-	 * 
-	 * // Create three random videos, but use the unique names ArrayList<Video>
-	 * videos = new ArrayList<Video>();
-	 * 
-	 * for (int i = 0; i < names.length; ++i) {
-	 * videos.add(TestData.randomVideo()); videos.get(i).setName(names[i]); }
-	 * 
-	 * // Add all the videos to the server for (Video v : videos){
-	 * readWriteVideoSvcUser1.addVideo(v); }
-	 * 
-	 * // Search for "The Cat" Collection<Video> searchResults =
-	 * readWriteVideoSvcUser1.findByTitle(names[0]);
-	 * assertTrue(searchResults.size() > 0);
-	 * 
-	 * // Make sure all the returned videos have "The Cat" for their title for
-	 * (Video v : searchResults) { assertTrue(v.getName().equals(names[0])); } }
-	 * 
-	 * 
-	 * @Rubric(value =
-	 * "A user can find videos that have a duration less than a certain value.",
-	 * goal =
-	 * "The goal of this evaluation is to ensure that your Spring application "
-	 * + "allows users to find videos by searching for videos with a duration "
-	 * + "less that a specified value.", points = 20.0, reference =
-	 * "This test is derived from the material in these videos: " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/97 " +
-	 * "https://class.coursera.org/mobilecloud-001/lecture/99 ")
-	 * 
-	 * @Test public void testFindByDurationLessThan() {
-	 * 
-	 * // Create the durations unique for testing. long[] durations = new
-	 * long[3]; durations[0] = 1; durations[1] = 5; durations[2] = 9;
-	 * 
-	 * // Create three random videos, but use the unique durations
-	 * ArrayList<Video> videos = new ArrayList<Video>();
-	 * 
-	 * for (int i = 0; i < durations.length; ++i) {
-	 * videos.add(TestData.randomVideo());
-	 * videos.get(i).setDuration(durations[0]); }
-	 * 
-	 * // Add all the videos to the server for (Video v : videos){
-	 * readWriteVideoSvcUser1.addVideo(v); }
-	 * 
-	 * // Search for "The Cat" Collection<Video> searchResults =
-	 * readWriteVideoSvcUser1.findByDurationLessThan(6L); // Make sure that we
-	 * have at least two videos assertTrue(searchResults.size() > 1);
-	 * 
-	 * for (Video v : searchResults) { // Make sure that all of the videos are
-	 * of the right duration assertTrue(v.getDuration() < 6); } }
-	 * 
-	 * private long getInvalidVideoId() { Set<Long> ids = new HashSet<Long>();
-	 * Collection<Video> stored = readWriteVideoSvcUser1.getVideoList(); for
-	 * (Video v : stored) { ids.add(v.getId()); }
-	 * 
-	 * long nonExistantId = Long.MIN_VALUE; while (ids.contains(nonExistantId))
-	 * { nonExistantId++; } return nonExistantId; }
-	 */
+		List<Doctor> docListReceived =readWriteVideoSvcUser2.getDoctorByUsername("doctor01");
+		Doctor docReceived = docListReceived.get(0);
+		
+		assertEquals(1, docReceived.getId());
+		assertEquals("DocName01", docReceived.getName());
+		assertEquals("DocLastName01", docReceived.getLastName());
+		assertEquals("11-01-1981", docReceived.getBirthDate());
+		assertTrue(docReceived.getIsFemale() == false);
+	}
+	
 }

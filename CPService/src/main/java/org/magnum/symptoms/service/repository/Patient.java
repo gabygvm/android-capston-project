@@ -23,21 +23,13 @@ public class Patient extends Person /* implements UserDetails */{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
-	/*
-	 * @Transient Collection<RolePatient> authorities = new
-	 * ArrayList<RolePatient>();
-	 */
-	// private Collection<Recipe> recipes;
-
 	public Patient() {
 		super();
-		// authorities.add(new RolePatient());
 	}
 
 	public Patient(String name, String lastName, String birthDate,
 			boolean isFemale, String username, String password) {
 		super(name, lastName, birthDate, isFemale, username, password);
-		// authorities.add(new RolePatient());
 	}
 
 	public long getId() {

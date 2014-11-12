@@ -1,9 +1,5 @@
 package org.magnum.symptoms.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.magnum.symptoms.service.auth.OAuth2SecurityConfiguration;
 import org.magnum.symptoms.service.repository.Doctor;
 import org.magnum.symptoms.service.repository.DoctorRepository;
@@ -60,7 +56,6 @@ public class Application /* extends RepositoryRestMvcConfiguration */{
 	// Tell Spring to launch our app!
 	public static void main(String[] args) throws Exception{
 
-		Patient patient;
 		
 		ConfigurableApplicationContext context = SpringApplication.run(
 				Application.class, args);
@@ -69,21 +64,21 @@ public class Application /* extends RepositoryRestMvcConfiguration */{
 		PatientRepository patientRepo = context.getBean(PatientRepository.class);
 		DoctorRepository doctorRepo = context.getBean(DoctorRepository.class);
 		
-		patient = patientRepo.saveAndFlush(new Patient("Name01", "LastName01", date_to_string, true,"patient01", "pat01"));
+		patientRepo.saveAndFlush(new Patient("Name01", "LastName01", date_to_string, true,"patient01", "pat01"));
 		doctorRepo.save(new Doctor("DocName01", "DocLastName01", date_to_string, false, "doctor01", "doc01"));
 		
 		date_to_string = "12-02-1982";
-		patient = patientRepo.saveAndFlush(new Patient("Name02", "LastName02", date_to_string, false,"patient02", "pat02"));
+		patientRepo.saveAndFlush(new Patient("Name02", "LastName02", date_to_string, false,"patient02", "pat02"));
 		doctorRepo.save(new Doctor("DocName02", "DocLastName02", date_to_string, true, "doctor02", "doc02"));
 		
 		date_to_string = "13-03-1983";
-		patient = patientRepo.saveAndFlush(new Patient("Name03", "LastName03", date_to_string, false,"patient03", "pat03"));
+		patientRepo.saveAndFlush(new Patient("Name03", "LastName03", date_to_string, false,"patient03", "pat03"));
 		
 		date_to_string = "14-04-1984";
-		patient = patientRepo.saveAndFlush(new Patient("Name04", "LastName04", date_to_string, true,"patient04", "pat04"));
+		patientRepo.saveAndFlush(new Patient("Name04", "LastName04", date_to_string, true,"patient04", "pat04"));
 		
 		date_to_string = "15-05-1985";
-		patient = patientRepo.saveAndFlush(new Patient("Name05", "LastName05", date_to_string, true,"patient05", "pat05"));
+		patientRepo.saveAndFlush(new Patient("Name05", "LastName05", date_to_string, true,"patient05", "pat05"));
 	}
 
 	// This version uses the Tomcat web container and configures it to
