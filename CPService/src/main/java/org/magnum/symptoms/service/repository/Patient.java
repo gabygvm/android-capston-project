@@ -1,14 +1,14 @@
 package org.magnum.symptoms.service.repository;
 
-import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.springframework.security.oauth2.common.util.JsonDateSerializer;
+import org.codehaus.jackson.annotate.JsonBackReference;
 
 /**
  * A simple object to represent a Patient
@@ -16,22 +16,24 @@ import org.springframework.security.oauth2.common.util.JsonDateSerializer;
  * @author Gabriela Vera
  */
 @Entity
-public class Patient extends Person /* implements UserDetails */{
-
+public class Patient extends Person{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
+	
+	@OneToMany(mappedBy = "patient")
+	private List<PatientRecord> patientRecord;
 
 	public Patient() {
 		super();
 	}
-
+	
 	public Patient(String name, String lastName, String birthDate,
 			boolean isFemale, String username, String password) {
 		super(name, lastName, birthDate, isFemale, username, password);
 	}
-
+	
 	public long getId() {
 		return this.id;
 	}
@@ -40,46 +42,12 @@ public class Patient extends Person /* implements UserDetails */{
 		this.id = id;
 	}
 
-	/*@Override
-	public Date getBirthDate() {
-		// TODO Auto-generated method stub
-		return super.getBirthDate();
-	}*/
-	/*
-	@Transient
-	public String getBirthDateString(){
-		return new SimpleDateFormat("dd/MM/yyyy").format(this.getBirthDate());
+	@JsonBackReference
+	public List<PatientRecord> getPatientRecord() {
+		return patientRecord;
 	}
-	
-	public void setBirthDateString(String date){
-		try {
-			this.setBirthDate(new SimpleDateFormat("dd/MM/yyyy").parse(date));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
-	
-	/*
-	 * 
-	 * @Override public Collection<? extends GrantedAuthority> getAuthorities()
-	 * { return authorities; }
-	 * 
-	 * @Override public String getPassword() { return this.getPassword(); }
-	 * 
-	 * @Override public String getUsername() { return this.getUsername(); }
-	 * 
-	 * @Override public boolean isAccountNonExpired() { return true; }
-	 * 
-	 * @Override public boolean isAccountNonLocked() { return true; }
-	 * 
-	 * @Override public boolean isCredentialsNonExpired() { return true; }
-	 * 
-	 * @Override public boolean isEnabled() { return true; }
-	 * 
-	 * public class RolePatient implements GrantedAuthority{
-	 * 
-	 * @Override public String getAuthority() { return "ROLE_PATIENT"; } }
-	 */
 
+	public void setPatientRecord(List<PatientRecord> patientRecord) {
+		this.patientRecord = patientRecord;
+	}	
 }

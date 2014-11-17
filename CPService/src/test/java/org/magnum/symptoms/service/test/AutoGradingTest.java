@@ -6,12 +6,14 @@ import io.magnum.autograder.junit.Rubric;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 //import org.magnum.symptoms.service.TestData;
 import org.magnum.symptoms.service.client.SecuredRestBuilder;
 import org.magnum.symptoms.service.client.UserSvcApi;
 import org.magnum.symptoms.service.repository.Doctor;
 import org.magnum.symptoms.service.repository.Patient;
+import org.magnum.symptoms.service.repository.PatientRecord;
 
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
@@ -133,6 +135,7 @@ public class AutoGradingTest {
 		assertEquals("12-02-1982", docReceived.getBirthDate());
 		assertTrue(docReceived.getIsFemale() == true);
 	}
+	/*@Ignore
 	@Test
 	public void testGetPatientDataFromUserName() throws Exception {
 		
@@ -145,6 +148,7 @@ public class AutoGradingTest {
 		assertEquals("15-05-1985", patReceived.getBirthDate());
 		assertTrue(patReceived.getIsFemale() == true);
 	}
+	@Ignore
 	@Test
 	public void testGetDoctorDataFromUserName() throws Exception {
 
@@ -156,6 +160,24 @@ public class AutoGradingTest {
 		assertEquals("DocLastName01", docReceived.getLastName());
 		assertEquals("11-01-1981", docReceived.getBirthDate());
 		assertTrue(docReceived.getIsFemale() == false);
+	}*/
+	@Test
+	public void GetPatientListFromPatientRecordOfDoc() throws Exception {
+
+		List<Patient> patList = readWriteVideoSvcUser2.getPatientsByDoctor();
+		
+		assertEquals("LastName03", patList.get(0).getLastName());
+		assertEquals("LastName04", patList.get(1).getLastName());
+		assertEquals("LastName05", patList.get(2).getLastName());
+		assertEquals("LastName06", patList.get(3).getLastName());
+		assertEquals(4, patList.size());
 	}
-	
+	@Test
+	public void GetPatientListFromPatientRecordOfDocAndPatientNameAndLastName() throws Exception {
+
+		List<Patient> patList = readWriteVideoSvcUser2.getPatientsByDoctorWithNameAndLastName("Name03","LastName03");
+		assertEquals("Name03", patList.get(0).getName());
+		assertEquals("LastName03", patList.get(0).getLastName());
+		assertEquals(1, patList.size());
+	}
 }

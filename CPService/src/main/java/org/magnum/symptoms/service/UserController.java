@@ -19,6 +19,7 @@
 package org.magnum.symptoms.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,8 @@ import org.magnum.symptoms.service.client.UserSvcApi;
 import org.magnum.symptoms.service.repository.Doctor;
 import org.magnum.symptoms.service.repository.DoctorRepository;
 import org.magnum.symptoms.service.repository.Patient;
+import org.magnum.symptoms.service.repository.PatientRecord;
+import org.magnum.symptoms.service.repository.PatientRecordRepository;
 import org.magnum.symptoms.service.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import retrofit.http.GET;
+import retrofit.http.Query;
 
 @Controller
 public class UserController {
@@ -47,7 +51,10 @@ public class UserController {
 	PatientRepository patientRepo;
 	@Autowired
 	DoctorRepository doctorRepo;
-
+	@Autowired
+	PatientRecordRepository patientRecordRepo;
+	
+	
 	@RequestMapping(value = UserSvcApi.ROLE_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody String getUserRole(HttpServletResponse response) {
 		GrantedAuthority authority = null;
@@ -65,25 +72,25 @@ public class UserController {
 	@RequestMapping(value = UserSvcApi.USER_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody String getUserUserName(HttpServletResponse response)
 	{
-		String username = null;
+		/*String username = null;
 		username = SecurityContextHolder.getContext().getAuthentication().getName();
-		
-		return username;
+		*/
+		return GetUsername();
 	}
 	
 	
 	@RequestMapping(value = UserSvcApi.PATIENT_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody Patient getPatientInfo(HttpServletResponse response)
 	{
-		String username = null;
-		username = SecurityContextHolder.getContext().getAuthentication().getName();
-		
-		List<Patient> patList = patientRepo.findByUsername(username);
-		
-		if(patList.size() > 0)
+		if(GetUsername() != null)
 		{
-			response.setStatus(HttpServletResponse.SC_OK);
-			return patList.get(0);
+			List<Patient> patList = patientRepo.findByUsername(GetUsername());
+			if(patList.size() > 0)
+			{
+				response.setStatus(HttpServletResponse.SC_OK);
+				patList.get(0).setPatientRecord(null);
+				return patList.get(0);
+			}
 		}
 		SendError(response, 404);
 		return null;
@@ -101,28 +108,31 @@ public class UserController {
 		}else
 			response.setStatus(HttpServletResponse.SC_OK);
 
+		patient.setPatientRecord(null);
 		return patient;
 	}
-	@RequestMapping(value = UserSvcApi.PATIENT_BY_USERNAME_SVC_PATH, method = RequestMethod.GET)
+	/*@RequestMapping(value = UserSvcApi.PATIENT_BY_USERNAME_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody List<Patient> getPatientByUsername(
 			@RequestParam(UserSvcApi.USERNAME_PARAMETER) String username,
 			HttpServletResponse response)
 	{
 		return patientRepo.findByUsername(username);
-	}
+	}*/
 
 	@RequestMapping(value = UserSvcApi.DOCTOR_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody Doctor getDoctorInfo(HttpServletResponse response)
 	{
-		String username = null;
-		username = SecurityContextHolder.getContext().getAuthentication().getName();
+		List<Doctor> doctList;
 		
-		List<Doctor> doctList = doctorRepo.findByUsername(username);
-		
-		if(doctList.size() > 0)
+		if(GetUsername() != null)
 		{
-			response.setStatus(HttpServletResponse.SC_OK);
-			return doctList.get(0);
+			doctList = doctorRepo.findByUsername(GetUsername());
+			if(doctList.size() > 0)
+			{
+				response.setStatus(HttpServletResponse.SC_OK);
+				doctList.get(0).setPatientRecord(null);
+				return doctList.get(0);
+			}
 		}
 		SendError(response, 404);
 		return null;
@@ -139,17 +149,93 @@ public class UserController {
 			SendError(response, 404);
 		}else
 			response.setStatus(HttpServletResponse.SC_OK);
-
+		
+		doctor.setPatientRecord(null);
 		return doctor;
 	}
-	@RequestMapping(value = UserSvcApi.DOCTOR_BY_USERNAME_SVC_PATH, method = RequestMethod.GET)
+	@RequestMapping(value = UserSvcApi.DOCTOR_FIND_PATIENTS_SVC_PATH, method = RequestMethod.GET)
+	public @ResponseBody List<Patient> getPatientsByDoctor(HttpServletResponse response)
+	{
+		List<Patient> patientList;
+		List<Doctor> doctList;
+		
+		if(GetUsername() != null)
+		{
+			doctList = doctorRepo.findByUsername(GetUsername());
+			patientList = patientRepo.findByPatientRecordDoctorId(doctList.get(0).getId());
+			
+			if(patientList.size() != 0)
+			{
+				for(int i = 0; i < patientList.size(); i++)
+				{
+					patientList.get(i).setPatientRecord(null);
+				}
+				response.setStatus(HttpServletResponse.SC_OK);
+				return patientList;
+			}
+		}
+		SendError(response, 404);
+		return null;
+	}
+	@RequestMapping(value = UserSvcApi.DOCTOR_FIND_PATIENTS_NAME_SVC_PATH, method = RequestMethod.GET)
+	public @ResponseBody List<Patient> getPatientsByDoctorWithNameAndLastName(
+			@RequestParam("name")String name, @RequestParam("lastname")String lastname,
+			HttpServletResponse response)
+	{
+		List<Doctor> doctList;
+		
+		if(GetUsername() != null)
+		{
+			List<Patient> patientList;
+			doctList = doctorRepo.findByUsername(GetUsername());
+			patientList = patientRepo.findByNameAndLastNameAndPatientRecordDoctorId(
+					name, lastname, doctList.get(0).getId());
+			
+			for(int i = 0; i < patientList.size(); i++)
+			{
+				patientList.get(i).setPatientRecord(null);
+			}
+			response.setStatus(HttpServletResponse.SC_OK);
+			return patientList;
+		}
+		SendError(response, 404);
+		return null;
+	}
+	
+	/*@RequestMapping(value = UserSvcApi.DOCTOR_BY_USERNAME_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody List<Doctor> getDoctorByUsername(
 			@RequestParam(UserSvcApi.USERNAME_PARAMETER) String username,
 			HttpServletResponse response)
 	{
 		return doctorRepo.findByUsername(username);
-	}
+	}*/
 
+/*	@RequestMapping(value = UserSvcApi.DOCTOR_FIND_PAT_RECORDS_SVC_PATH, method = RequestMethod.GET)
+	public @ResponseBody List<PatientRecord> getPatientRecordByDoctor(HttpServletResponse response)
+	{
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		List<Doctor> doctList;
+		List<PatientRecord> patRecord;
+
+		if(username != null)
+		{
+			doctList = doctorRepo.findByUsername(username);
+			
+			if(doctList.size() > 0)
+			{
+				patRecord = patientRecordRepo.findByDoctorId(doctList.get(0).getId());
+				
+				if(patRecord.size() > 0)
+				{
+					response.setStatus(HttpServletResponse.SC_OK);
+					return patRecord;
+				}
+			}
+		}
+		SendError(response, 404);
+		return null;
+	}*/
+	
 	
 	private void SendError(HttpServletResponse response, int errorCode) {
 		try {
@@ -158,5 +244,12 @@ public class UserController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private String GetUsername()
+	{
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		return username;
 	}
 }

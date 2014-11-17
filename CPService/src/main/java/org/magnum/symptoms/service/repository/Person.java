@@ -1,12 +1,7 @@
 package org.magnum.symptoms.service.repository;
 
-import java.util.Date;
-
+import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.springframework.security.oauth2.common.util.JsonDateSerializer;
 
 /**
  * A simple object to represent a Person
@@ -18,11 +13,10 @@ public class Person {
 
 	private String name;
 	private String lastName;
-	//@JsonSerialize(using=JsonDateSerializer.class)
-	//private Date birthDate;
 	private String birthDate;
 	private boolean isFemale;
 
+	@Column(unique=true)
 	private String username;
 	private String password;
 

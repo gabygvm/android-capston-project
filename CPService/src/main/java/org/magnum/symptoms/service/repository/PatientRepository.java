@@ -8,8 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
- * An interface for a repository that can store Video objects and allow them to
- * be searched by title.
+ * An interface for a repository that can store Patients objects and allow them to
+ * be searched by username.
  * 
  * @author Gabriela Vera
  *
@@ -17,4 +17,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
 	 public List<Patient> findByUsername(@Param(UserSvcApi.USERNAME_PARAMETER)String username);
+	 
+	 public List<Patient> findByNameAndLastNameAndPatientRecordDoctorId(@Param("name")String name, @Param("lastname")String lastName, @Param("docId")long docId);
+	 
+	 public List<Patient> findByPatientRecordDoctorId(@Param("docId") long docId); 
 }
