@@ -10,8 +10,7 @@
     <string name="server">Server IP or Hostname</string>
     <string name="localhost">https://10.0.2.2:8443</string>
     <string name="title_activity_video_list">VideoListActivity</string>
-    
-    
+
     <color name="royal_blue">#2B60DE</color>
     <color name="jeans_blue">#A0CFEC</color>
     <color name="light_blue">#ADDFFF</color>
@@ -23,22 +22,20 @@
     <string name="alarms">Alarms</string>
     <string name="patients">Patients</string>
     <string name="changePic">Edit</string>
-    
     <string name="title_activity_doctor">DoctorActivity</string>
     <string name="name">Name: </string>
     <string name="lastname">Last Name: </string>
     <string name="birthday">Birth Date: </string>
     <string name="gender">Gender: </string>
     <string name="medicalRecord">Medical Record: </string>
-    
-    
     <string name="title_activity_check_in">CheckInActivity</string>
     <string name="checkInText">CheckIn Actitivy</string>
-    
     <string name="title_activity_reminder">ReminderActivity</string>
     <string name="checkReminders">Please select the time for at least four daily Reminders</string>
-	<string name="setTime1">Set Reminder 1</string>
-	<string name="setTime2">Set Reminder 2</string>
-	<string name="setTime3">Set Reminder 3</string>
-	<string name="setTime4">Set Reminder 4</string>
+    <string name="setTime1">Set Reminder 1</string>
+    <string name="setTime2">Set Reminder 2</string>
+    <string name="setTime3">Set Reminder 3</string>
+    <string name="setTime4">Set Reminder 4</string>
+    <string name="title_activity_doctor_patients">DoctorPatientsActivity</string>
+
 </resources>

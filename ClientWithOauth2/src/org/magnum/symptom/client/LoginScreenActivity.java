@@ -92,40 +92,6 @@ public class LoginScreenActivity extends Activity {
 						Toast.LENGTH_SHORT).show();
 			}
 		});
-		
-		
-		
-		
-		/*
-		
-		CallableTask.invoke(new Callable<Collection<Video>>() {
-
-			@Override
-			public Collection<Video> call() throws Exception {
-				return svc.getVideoList();
-			}
-		}, new TaskCallback<Collection<Video>>() {
-
-			@Override
-			public void success(Collection<Video> result) {
-				// OAuth 2.0 grant was successful and we
-				// can talk to the server, open up the video listing
-
-				startActivity(new Intent(
-						LoginScreenActivity.this,
-						PatientActivity.class));
-			}
-
-			@Override
-			public void error(Exception e) {
-				Log.e(LoginScreenActivity.class.getName(), "Error logging in via OAuth.", e);
-				
-				Toast.makeText(
-						LoginScreenActivity.this,
-						"Login failed, check your Internet connection and credentials.",
-						Toast.LENGTH_SHORT).show();
-			}
-		});*/
 	}
 
 }

@@ -4,6 +4,9 @@ import java.util.concurrent.Callable;
 
 import org.magnum.videoup.client.R;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,8 +27,8 @@ public class DoctorActivity extends Activity {
 	
 	static final int REQUEST_IMAGE_CAPTURE = 1;
 	private ImageView _imageView;
-//	private String mCurrentPhotoPath;
-	private Bitmap imageBitmap;
+	private Bitmap _imageBitmap;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +37,7 @@ public class DoctorActivity extends Activity {
 		
 		_imageView = (ImageView) findViewById(R.id.imageView1);
 		
-		Button editImageButton = (Button)findViewById(R.id.changePicButton);
-		editImageButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				dispatchTakePictureIntent();
-			}
-		});
+		ButterKnife.inject(this);
 		
 		getDoctorInfo();
 	}
@@ -51,18 +48,26 @@ public class DoctorActivity extends Activity {
 		super.onResume();
 	}
 
-
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	    if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 	        Bundle extras = data.getExtras();
-	        imageBitmap = (Bitmap) extras.get("data");
-	        
-	        _imageView.setImageBitmap(imageBitmap);
+	        _imageBitmap = (Bitmap) extras.get("data");    
+	        _imageView.setImageBitmap(_imageBitmap);
 	    }
 	}
 
+	@OnClick(R.id.patientsButton)
+	public void PatientsButton() {
+		startActivity(new Intent(
+				DoctorActivity.this,
+				DoctorPatientsActivity.class));
+	}
+	
+	@OnClick(R.id.changePicButton)
+	public void ChangePicButton() {
+		dispatchTakePictureIntent();
+	}
 	
 	private void getDoctorInfo()
 	{
@@ -112,7 +117,6 @@ public class DoctorActivity extends Activity {
 		}
 	}
 	
-	
 	private void dispatchTakePictureIntent() 
 	{
 	    Intent intentTakePic = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -122,47 +126,4 @@ public class DoctorActivity extends Activity {
 	       	startActivityForResult(intentTakePic, REQUEST_IMAGE_CAPTURE);
 	    }
 	}
-	/*private File createImageFile() throws IOException
-	{
-	    // Create an image file name
-	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-	    String imageFileName = "JPEG_" + timeStamp + "_";
-	    File storageDir = Environment.getExternalStoragePublicDirectory(
-	            Environment.DIRECTORY_PICTURES);
-	    File image = File.createTempFile(
-	        imageFileName,  // prefix
-	        ".jpg",         // suffix
-	        storageDir      // directory
-	    );
-
-	    // Save a file: path for use with ACTION_VIEW intents
-	    mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-	    return image;
-	}*/
-	
-	
-	
-	
-	
-	
-	
-/*
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.doctor, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}*/
 }
