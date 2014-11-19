@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/searchView2"
         android:layout_below="@+id/textView1"
-        android:layout_marginTop="26dp" 
-        android:queryHint="Patient's name" >
+        android:layout_marginTop="26dp"
+        android:queryHint="Patient&apos;s name" >
     </SearchView>
 
     <Button
@@ -36,7 +36,7 @@
         android:layout_below="@+id/searchView1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:queryHint="Patient's lastname" >
+        android:queryHint="Patient&apos;s lastname" >
     </SearchView>
 
     <TextView
@@ -48,5 +48,14 @@
         android:layout_marginTop="28dp"
         android:text="Search patient according to the info below."
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ListView
+        android:id="@+id/listViewDoctorPatients"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_below="@+id/searchByNameButton"
+        android:visibility="invisible">
+    </ListView>
 
 </RelativeLayout>
