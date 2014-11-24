@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.magnum.videoup.client"
+    package="org.magnum.symptom.client"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -22,7 +22,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="org.magnum.symptom.client.LoginScreenActivity"
+            android:name="org.magnum.symptom.client.gen.activities.LoginScreenActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,25 +30,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
-            android:name="org.magnum.symptom.client.VideoListActivity"
-            android:label="@string/title_activity_video_list" />
-        <activity
-            android:name="org.magnum.symptom.client.PatientActivity"
+            android:name="org.magnum.symptom.client.gen.activities.PatientActivity"
             android:label="@string/title_activity_patient" />
         <activity
-            android:name="org.magnum.symptom.client.CheckInActivity"
+            android:name="org.magnum.symptom.client.gen.activities.CheckInActivity"
             android:label="@string/title_activity_check_in" />
         <activity
-            android:name="org.magnum.symptom.client.reminder.ReminderActivity"
+            android:name="org.magnum.symptom.client.gen.activities.ReminderActivity"
             android:label="@string/title_activity_reminder" />
         <activity
-            android:name="org.magnum.symptom.client.DoctorActivity"
+            android:name="org.magnum.symptom.client.gen.activities.DoctorActivity"
             android:label="@string/title_activity_doctor" >
         </activity>
 
-        <receiver
-            android:name="org.magnum.symptom.client.CustomAlarmReceiver"
+        <receiver 
+            android:name="org.magnum.symptom.client.gen.activities.CustomAlarmReceiver"
             android:enabled="true" >
             <intent-filter>
                 <action android:name="org.magnum.symptom.client" >
@@ -57,8 +55,12 @@
         </receiver>
 
         <activity
-            android:name="org.magnum.symptom.client.DoctorPatientsActivity"
+            android:name="org.magnum.symptom.client.gen.activities.DoctorPatientsActivity"
             android:label="@string/title_activity_doctor_patients" >
+        </activity>
+        <activity
+            android:name="org.magnum.symptom.client.gen.activities.MedicineActivity"
+            android:label="@string/title_activity_medicine" >
         </activity>
     </application>
 

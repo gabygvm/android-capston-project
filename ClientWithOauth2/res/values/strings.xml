@@ -14,28 +14,33 @@
     <color name="royal_blue">#2B60DE</color>
     <color name="jeans_blue">#A0CFEC</color>
     <color name="light_blue">#ADDFFF</color>
-    <color name="pearl">#FDEEF4</color>
+    <color name="lighter_blue">#C4E9FF</color>
+    <color name="light_green">#A9F09E</color>
 
-    <string name="title_activity_patient">PatientActivity</string>
+    <string name="title_activity_patient">Patient Information</string>
     <string name="recipe">Recipe</string>
     <string name="check_in">Check-In</string>
     <string name="alarms">Alarms</string>
     <string name="patients">Patients</string>
     <string name="changePic">Edit</string>
-    <string name="title_activity_doctor">DoctorActivity</string>
+    <string name="title_activity_doctor">Hello Doctor</string>
     <string name="name">Name: </string>
     <string name="lastname">Last Name: </string>
     <string name="birthday">Birth Date: </string>
     <string name="gender">Gender: </string>
     <string name="medicalRecord">Medical Record: </string>
-    <string name="title_activity_check_in">CheckInActivity</string>
+    <string name="title_activity_check_in">Check In!</string>
     <string name="checkInText">CheckIn Actitivy</string>
-    <string name="title_activity_reminder">ReminderActivity</string>
+    <string name="title_activity_reminder">Alarms Configuration</string>
     <string name="checkReminders">Please select the time for at least four daily Reminders</string>
     <string name="setTime1">Set Reminder 1</string>
     <string name="setTime2">Set Reminder 2</string>
     <string name="setTime3">Set Reminder 3</string>
     <string name="setTime4">Set Reminder 4</string>
-    <string name="title_activity_doctor_patients">DoctorPatientsActivity</string>
-
+    <string name="title_activity_doctor_patients">Patients Search</string>
+    
+    <string name="title_activity_medicine">Patients Medicines</string>
+	<string name="addMedInstruction">To add a medicine write it down here and press Done</string>
+    <string name="deleteMedInstruction">To delete a medicine select it. When finished deleting press Done</string>
+	
 </resources>

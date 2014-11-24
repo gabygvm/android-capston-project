@@ -8,48 +8,15 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="org.magnum.symptom.client.PatientActivity" >
-
-
-    <Button
-        android:id="@+id/checkInButton"
-        style="@style/AppTheme"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_above="@+id/recipeButton"
-        android:layout_centerHorizontal="true"
-        android:layout_toLeftOf="@+id/alarmsButton"
-        android:layout_toStartOf="@+id/alarmsButton"
-        android:text="@string/check_in" />
-
-    <Button
-        android:id="@+id/recipeButton"
-        style="@style/AppTheme"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_alignLeft="@+id/checkInButton"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/checkInButton"
-        android:layout_centerHorizontal="true"
-        android:text="@string/recipe"
-        android:textColor="@color/royal_blue" />
-
-    <Button
-        android:id="@+id/alarmsButton"
-        style="@style/AppTheme"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_alignTop="@+id/checkInButton"
-        android:layout_centerHorizontal="true"
-        android:text="@string/alarms" />
+    tools:context="org.magnum.symptom.client.gen.activities.PatientActivity" >
 
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="200dp"
         android:layout_height="400dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="24dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
         android:layout_toRightOf="@+id/alarmsButton"
         android:src="@drawable/ic_launcher" />
 
@@ -111,5 +78,34 @@
         android:layout_below="@+id/BirthdayTxtV"
         android:text="@string/medicalRecord"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/recipeButton"
+        style="@style/AppTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="31dp"
+        android:text="@string/recipe"
+        android:textColor="@color/royal_blue" />
+
+    <Button
+        android:id="@+id/checkInButton"
+        style="@style/AppTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/recipeButton"
+        android:layout_centerHorizontal="true"
+        android:text="@string/check_in" />
+
+    <Button
+        android:id="@+id/alarmsButton"
+        style="@style/AppTheme"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/checkInButton"
+        android:layout_centerHorizontal="true"
+        android:text="@string/alarms" />
 
 </RelativeLayout>
