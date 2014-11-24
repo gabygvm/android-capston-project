@@ -1,5 +1,5 @@
-package org.magnum.symptom.client;
-import org.magnum.videoup.client.R;
+package org.magnum.symptom.client.gen.activities;
+import org.magnum.symptom.client.R;
 
 import android.app.Notification;
 import android.app.NotificationManager;

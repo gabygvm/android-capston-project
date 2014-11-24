@@ -4,7 +4,7 @@
  **
  ** 
  */
-package org.magnum.symptom.client.oauth;
+package org.magnum.symptom.client.gen.oauth;
 
 /**
  * A special class made to specify exceptions that are thrown by our

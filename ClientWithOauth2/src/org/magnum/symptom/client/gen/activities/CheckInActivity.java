@@ -1,6 +1,6 @@
-package org.magnum.symptom.client;
+package org.magnum.symptom.client.gen.activities;
 
-import org.magnum.videoup.client.R;
+import org.magnum.symptom.client.R;
 
 import android.app.Activity;
 import android.os.Bundle;

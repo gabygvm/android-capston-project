@@ -14,6 +14,7 @@ import org.magnum.symptoms.service.client.UserSvcApi;
 import org.magnum.symptoms.service.repository.Doctor;
 import org.magnum.symptoms.service.repository.Patient;
 import org.magnum.symptoms.service.repository.PatientRecord;
+import org.magnum.symptoms.service.repository.Recipe;
 
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
@@ -50,20 +51,27 @@ public class AutoGradingTest {
 
 	private final String CLIENT_ID = "userAndroid";
 
-	private UserSvcApi readWriteVideoSvcUser1 = new SecuredRestBuilder()
+	private UserSvcApi UserPatient04 = new SecuredRestBuilder()
 			.setClient(new ApacheClient(UnsafeHttpsClient.createUnsafeClient()))
 			.setEndpoint(TEST_URL)
 			.setLoginEndpoint(TEST_URL + UserSvcApi.TOKEN_PATH)
 			.setUsername(USERNAME1).setPassword(PASSWORD1)
 			.setClientId(CLIENT_ID).build().create(UserSvcApi.class);
 
-	private UserSvcApi readWriteVideoSvcUser2 = new SecuredRestBuilder()
+	private UserSvcApi UserDoctor02 = new SecuredRestBuilder()
 			.setClient(new ApacheClient(UnsafeHttpsClient.createUnsafeClient()))
 			.setEndpoint(TEST_URL)
 			.setLoginEndpoint(TEST_URL + UserSvcApi.TOKEN_PATH)
 			.setUsername(USERNAME2).setPassword(PASSWORD2)
 			.setClientId(CLIENT_ID).build().create(UserSvcApi.class);
 
+	private UserSvcApi UserDoctor01 = new SecuredRestBuilder()
+	.setClient(new ApacheClient(UnsafeHttpsClient.createUnsafeClient()))
+	.setEndpoint(TEST_URL)
+	.setLoginEndpoint(TEST_URL + UserSvcApi.TOKEN_PATH)
+	.setUsername("doctor01").setPassword("doc01")
+	.setClientId(CLIENT_ID).build().create(UserSvcApi.class);
+	
 	@Rubric(value = "Video data is preserved", goal = "The goal of this evaluation is to ensure that your Spring controller(s) "
 			+ "properly unmarshall Video objects from the data that is sent to them "
 			+ "and that the HTTP API for adding videos is implemented properly. The"
@@ -76,19 +84,19 @@ public class AutoGradingTest {
 			+ "https://class.coursera.org/mobilecloud-001/lecture/99 ")
 	@Test
 	public void testGetUserRole_Patient() throws Exception {
-		String patReceived = readWriteVideoSvcUser1.getUserRole();
+		String patReceived = UserPatient04.getUserRole();
 		assertEquals("ROLE_PATIENT", patReceived);
 	}
 	@Test
 	public void testGetUserRole_Doctor() throws Exception {
-		String docReceived = readWriteVideoSvcUser2.getUserRole();
+		String docReceived = UserDoctor02.getUserRole();
 		assertEquals("ROLE_DOCTOR", docReceived);
 	}
 	@Test
 	public void testGetUserUserName() throws Exception {
 
-		String username1 = readWriteVideoSvcUser1.getUserUserName();	
-		String username2 = readWriteVideoSvcUser2.getUserUserName();
+		String username1 = UserPatient04.getUserUserName();	
+		String username2 = UserDoctor02.getUserUserName();
 		
 		assertEquals("patient04", username1);
 		assertEquals("doctor02", username2);
@@ -97,20 +105,20 @@ public class AutoGradingTest {
 	@Test
 	public void testGetPatientInfo() throws Exception {
 		
-		Patient patReceived = readWriteVideoSvcUser1.getPatientInfo();
-		assertEquals(4, patReceived.getId());
-		assertEquals("Name04", patReceived.getName());
-		assertEquals("LastName04", patReceived.getLastName());
+		Patient patReceived = UserPatient04.getPatientInfo();
+		assertEquals(6, patReceived.getId());
+		assertEquals("NAME04", patReceived.getName());
+		assertEquals("LASTNAME04", patReceived.getLastName());
 		assertEquals("14-04-1984", patReceived.getBirthDate());
 		assertTrue(patReceived.getIsFemale() == true);
 	}
 	@Test
 	public void testGetDoctoInfo() throws Exception {
 
-		Doctor docReceived = readWriteVideoSvcUser2.getDoctorInfo();
+		Doctor docReceived = UserDoctor02.getDoctorInfo();
 		assertEquals(2, docReceived.getId());
-		assertEquals("DocName02", docReceived.getName());
-		assertEquals("DocLastName02", docReceived.getLastName());
+		assertEquals("DOCNAME02", docReceived.getName());
+		assertEquals("DOCLASTNAME02", docReceived.getLastName());
 		assertEquals("12-02-1982", docReceived.getBirthDate());
 		assertTrue(docReceived.getIsFemale() == true);
 	}
@@ -118,20 +126,20 @@ public class AutoGradingTest {
 	@Test
 	public void testGetPatientDataFromId() throws Exception {
 		
-		Patient patReceived = readWriteVideoSvcUser1.getPatientById(3);
-		assertEquals(3, patReceived.getId());
-		assertEquals("Name03", patReceived.getName());
-		assertEquals("LastName03", patReceived.getLastName());
+		Patient patReceived = UserPatient04.getPatientById(5);
+		assertEquals(5, patReceived.getId());
+		assertEquals("NAME03", patReceived.getName());
+		assertEquals("LASTNAME03", patReceived.getLastName());
 		assertEquals("13-03-1983", patReceived.getBirthDate());
 		assertTrue(patReceived.getIsFemale() == false);
 	}
 	@Test
 	public void testGetDoctorDataFromId() throws Exception {
 
-		Doctor docReceived = readWriteVideoSvcUser2.getDoctorById(2);
+		Doctor docReceived = UserDoctor02.getDoctorById(2);
 		assertEquals(2, docReceived.getId());
-		assertEquals("DocName02", docReceived.getName());
-		assertEquals("DocLastName02", docReceived.getLastName());
+		assertEquals("DOCNAME02", docReceived.getName());
+		assertEquals("DOCLASTNAME02", docReceived.getLastName());
 		assertEquals("12-02-1982", docReceived.getBirthDate());
 		assertTrue(docReceived.getIsFemale() == true);
 	}
@@ -164,20 +172,46 @@ public class AutoGradingTest {
 	@Test
 	public void GetPatientListFromPatientRecordOfDoc() throws Exception {
 
-		List<Patient> patList = readWriteVideoSvcUser2.getPatientsByDoctor();
+		List<Patient> patList = UserDoctor02.getPatientsByDoctor();
 		
-		assertEquals("LastName03", patList.get(0).getLastName());
-		assertEquals("LastName04", patList.get(1).getLastName());
-		assertEquals("LastName05", patList.get(2).getLastName());
-		assertEquals("LastName06", patList.get(3).getLastName());
+		assertEquals("LASTNAME03", patList.get(0).getLastName());
+		assertEquals("LASTNAME04", patList.get(1).getLastName());
+		assertEquals("LASTNAME05", patList.get(2).getLastName());
+		assertEquals("LASTNAME06", patList.get(3).getLastName());
 		assertEquals(4, patList.size());
 	}
 	@Test
 	public void GetPatientListFromPatientRecordOfDocAndPatientNameAndLastName() throws Exception {
 
-		List<Patient> patList = readWriteVideoSvcUser2.getPatientsByDoctorWithNameAndLastName("Name03","LastName03");
-		assertEquals("Name03", patList.get(0).getName());
-		assertEquals("LastName03", patList.get(0).getLastName());
+		List<Patient> patList = UserDoctor02.getPatientsByDoctorWithNameAndLastName("Name03","LastName03");
+		assertEquals("NAME03", patList.get(0).getName());
+		assertEquals("LASTNAME03", patList.get(0).getLastName());
 		assertEquals(1, patList.size());
+	}
+	@Test
+	public void GetPatientListFromPatientRecordOfDocAndPatientName() throws Exception {
+
+		List<Patient> patList = UserDoctor02.getPatientsByDoctorWithNameAndLastName("Name03","");
+		assertEquals("NAME03", patList.get(0).getName());
+		assertEquals("LASTNAME03", patList.get(0).getLastName());
+		assertEquals("NAME03", patList.get(1).getName());
+		assertEquals("LASTNAME06", patList.get(1).getLastName());
+		assertEquals(2, patList.size());
+	}
+	@Test
+	public void GetPatientListFromPatientRecordOfDocAndPatientLastName() throws Exception {
+
+		List<Patient> patList = UserDoctor02.getPatientsByDoctorWithNameAndLastName("","LastName06");
+		assertEquals("NAME03", patList.get(0).getName());
+		assertEquals("LASTNAME06", patList.get(0).getLastName());
+		assertEquals(1, patList.size());
+	}
+	@Test
+	public void GetRecipeFromPatIdAndDoc() throws Exception {
+
+		Recipe recipe = UserDoctor01.getPatRecipesByPatIdAndCurrentDoc((long)3);
+		
+		assertEquals(1, recipe.getMedicines().size());
+		assertEquals("MEDICINE01", recipe.getMedicines().get(0).getMedicine());
 	}
 }

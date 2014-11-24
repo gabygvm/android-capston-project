@@ -1,8 +1,8 @@
-package org.magnum.symptom.client.reminder;
+package org.magnum.symptom.client.gen.activities;
 
 import java.util.Calendar;
 
-import org.magnum.videoup.client.R;
+import org.magnum.symptom.client.R;
 
 import android.app.Activity;
 import android.app.AlarmManager;

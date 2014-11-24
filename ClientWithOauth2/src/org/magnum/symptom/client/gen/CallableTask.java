@@ -4,7 +4,7 @@
 **
 ** 
 */
-package org.magnum.symptom.client;
+package org.magnum.symptom.client.gen;
 
 import java.util.concurrent.Callable;
 

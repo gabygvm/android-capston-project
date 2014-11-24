@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 
 import org.magnum.symptoms.service.client.UserSvcApi;
@@ -31,6 +32,8 @@ import org.magnum.symptoms.service.repository.Patient;
 import org.magnum.symptoms.service.repository.PatientRecord;
 import org.magnum.symptoms.service.repository.PatientRecordRepository;
 import org.magnum.symptoms.service.repository.PatientRepository;
+import org.magnum.symptoms.service.repository.Recipe;
+import org.magnum.symptoms.service.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,18 +45,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import retrofit.http.GET;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 @Controller
 public class UserController {
 
 	@Autowired
-	PatientRepository patientRepo;
-	@Autowired
-	DoctorRepository doctorRepo;
-	@Autowired
-	PatientRecordRepository patientRecordRepo;
+	private EntityManager entityMng;
 	
+	@Autowired
+	private PatientRepository patientRepo;
+
+	@Autowired
+	private DoctorRepository doctorRepo;
+	
+	@Autowired
+	private PatientRecordRepository patientRecordRepo;
+	
+	@Autowired
+	private RecipeRepository recipeRepo;
 	
 	@RequestMapping(value = UserSvcApi.ROLE_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody String getUserRole(HttpServletResponse response) {
@@ -66,15 +77,13 @@ public class UserController {
 			SendError(response, 404);
 		}else
 			response.setStatus(HttpServletResponse.SC_OK);
-		
+		entityMng.clear();
 		return authority.getAuthority();
 	}
 	@RequestMapping(value = UserSvcApi.USER_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody String getUserUserName(HttpServletResponse response)
 	{
-		/*String username = null;
-		username = SecurityContextHolder.getContext().getAuthentication().getName();
-		*/
+		entityMng.clear();
 		return GetUsername();
 	}
 	
@@ -89,10 +98,12 @@ public class UserController {
 			{
 				response.setStatus(HttpServletResponse.SC_OK);
 				patList.get(0).setPatientRecord(null);
+				entityMng.clear();
 				return patList.get(0);
 			}
 		}
 		SendError(response, 404);
+		entityMng.clear();
 		return null;
 	}
 	@RequestMapping(value = UserSvcApi.PATIENT_SVC_PATH + "/{id}", method = RequestMethod.GET)
@@ -109,6 +120,7 @@ public class UserController {
 			response.setStatus(HttpServletResponse.SC_OK);
 
 		patient.setPatientRecord(null);
+		entityMng.clear();
 		return patient;
 	}
 	/*@RequestMapping(value = UserSvcApi.PATIENT_BY_USERNAME_SVC_PATH, method = RequestMethod.GET)
@@ -131,10 +143,12 @@ public class UserController {
 			{
 				response.setStatus(HttpServletResponse.SC_OK);
 				doctList.get(0).setPatientRecord(null);
+				entityMng.clear();
 				return doctList.get(0);
 			}
 		}
 		SendError(response, 404);
+		entityMng.clear();
 		return null;
 	}
 	@RequestMapping(value = UserSvcApi.DOCTOR_SVC_PATH + "/{id}", method = RequestMethod.GET)
@@ -151,6 +165,7 @@ public class UserController {
 			response.setStatus(HttpServletResponse.SC_OK);
 		
 		doctor.setPatientRecord(null);
+		entityMng.clear();
 		return doctor;
 	}
 	@RequestMapping(value = UserSvcApi.DOCTOR_FIND_PATIENTS_SVC_PATH, method = RequestMethod.GET)
@@ -171,10 +186,12 @@ public class UserController {
 					patientList.get(i).setPatientRecord(null);
 				}
 				response.setStatus(HttpServletResponse.SC_OK);
+				entityMng.clear();
 				return patientList;
 			}
 		}
 		SendError(response, 404);
+		entityMng.clear();
 		return null;
 	}
 	@RequestMapping(value = UserSvcApi.DOCTOR_FIND_PATIENTS_NAME_SVC_PATH, method = RequestMethod.GET)
@@ -188,19 +205,68 @@ public class UserController {
 		{
 			List<Patient> patientList;
 			doctList = doctorRepo.findByUsername(GetUsername());
-			patientList = patientRepo.findByNameAndLastNameAndPatientRecordDoctorId(
-					name, lastname, doctList.get(0).getId());
 			
-			for(int i = 0; i < patientList.size(); i++)
+			if(((name != "") || (lastname != "")) && (doctList != null))
 			{
-				patientList.get(i).setPatientRecord(null);
+				if(name == ""){
+					patientList = patientRepo.findByLastNameAndPatientRecordDoctorId(
+							lastname.toUpperCase(), doctList.get(0).getId());
+				}
+				else if(lastname == ""){
+					patientList = patientRepo.findByNameAndPatientRecordDoctorId(
+							name.toUpperCase(), doctList.get(0).getId());
+				}
+				else{
+					patientList = patientRepo.findByNameAndLastNameAndPatientRecordDoctorId(
+						name.toUpperCase(), lastname.toUpperCase(), doctList.get(0).getId());
+				}
+				
+				if(patientList.size() != 0)
+				{
+					for(int i = 0; i < patientList.size(); i++)
+						patientList.get(i).setPatientRecord(null);
+				
+					response.setStatus(HttpServletResponse.SC_OK);
+					entityMng.clear();
+					return patientList;
+				}
 			}
-			response.setStatus(HttpServletResponse.SC_OK);
-			return patientList;
 		}
 		SendError(response, 404);
+		entityMng.clear();
 		return null;
 	}
+	
+	@RequestMapping(value = UserSvcApi.DOCTOR_PATIENT_RECIPES_PATH, method = RequestMethod.GET)
+	public @ResponseBody Recipe getPatRecipesByPatIdAndCurrentDoc(@RequestParam(
+			UserSvcApi.ID_PARAMETER) long patId, HttpServletResponse response)
+	{
+		List<Doctor> doctList;
+		List<Recipe> recipeList;
+		Recipe patRecipe;
+		
+		if(GetUsername() != null)
+		{
+			doctList = doctorRepo.findByUsername(GetUsername());
+			if(doctList.size() != 0)
+			{
+				recipeList = recipeRepo.findByPatRecordDoctorIdAndPatRecordPatientIdOrderByIdDesc(doctList.get(0).getId(), patId);
+				if(recipeList.size() != 0)
+				{
+					patRecipe = recipeList.get(0);
+					patRecipe.setPatRecord(null);
+					
+					response.setStatus(HttpServletResponse.SC_OK);
+					entityMng.clear();
+					return patRecipe;
+				}
+			}
+		}
+		SendError(response, 404);
+		entityMng.clear();
+		return null;
+	}
+	
 	
 	/*@RequestMapping(value = UserSvcApi.DOCTOR_BY_USERNAME_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody List<Doctor> getDoctorByUsername(

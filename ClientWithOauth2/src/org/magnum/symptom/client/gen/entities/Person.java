@@ -1,4 +1,4 @@
-package org.magnum.symptom.client;
+package org.magnum.symptom.client.gen.entities;
 
 
 /**

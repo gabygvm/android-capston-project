@@ -2,6 +2,7 @@ package org.magnum.symptoms.service.repository;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
 
 /**
  * A simple object to represent a Person
@@ -81,5 +82,12 @@ public class Person {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	@PrePersist
+	protected void MedicinePrePersist()
+	{
+		this.name = this.name.toUpperCase();
+		this.lastName = this.lastName.toUpperCase();
 	}
 }

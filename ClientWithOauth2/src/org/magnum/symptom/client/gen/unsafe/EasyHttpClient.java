@@ -4,7 +4,7 @@
 **
 ** 
 */
-package org.magnum.symptom.client.unsafe;
+package org.magnum.symptom.client.gen.unsafe;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

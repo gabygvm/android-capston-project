@@ -1,9 +1,12 @@
-package org.magnum.symptom.client;
+package org.magnum.symptom.client.gen.activities;
 
-import java.util.Collection;
 import java.util.concurrent.Callable;
 
-import org.magnum.videoup.client.R;
+import org.magnum.symptom.client.R;
+import org.magnum.symptom.client.gen.CallableTask;
+import org.magnum.symptom.client.gen.TaskCallback;
+import org.magnum.symptom.client.gen.UserSvc;
+import org.magnum.symptom.client.gen.UserSvcApi;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -4,7 +4,7 @@
  **
  ** 
  */
-package org.magnum.symptom.client.oauth;
+package org.magnum.symptom.client.gen.oauth;
 
 import java.util.ArrayList;
 import java.util.List;

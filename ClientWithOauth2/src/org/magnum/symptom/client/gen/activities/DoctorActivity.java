@@ -1,27 +1,25 @@
-package org.magnum.symptom.client;
+package org.magnum.symptom.client.gen.activities;
 
 import java.util.concurrent.Callable;
 
-import org.magnum.videoup.client.R;
+import org.magnum.symptom.client.R;
+import org.magnum.symptom.client.gen.CallableTask;
+import org.magnum.symptom.client.gen.TaskCallback;
+import org.magnum.symptom.client.gen.UserSvc;
+import org.magnum.symptom.client.gen.UserSvcApi;
+import org.magnum.symptom.client.gen.entities.Doctor;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class DoctorActivity extends Activity {	
 	
@@ -44,7 +42,6 @@ public class DoctorActivity extends Activity {
 	
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 	}
 
@@ -79,7 +76,6 @@ public class DoctorActivity extends Activity {
 			
 				@Override
 				public Doctor call() throws Exception {
-					// TODO Auto-generated method stub
 					return svc.getDoctorInfo();
 				}
 				

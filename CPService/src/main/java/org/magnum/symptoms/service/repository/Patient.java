@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonBackReference;
 
@@ -16,6 +17,7 @@ import org.codehaus.jackson.annotate.JsonBackReference;
  * @author Gabriela Vera
  */
 @Entity
+@Table(name = "Person")
 public class Patient extends Person{
 
 	@Id

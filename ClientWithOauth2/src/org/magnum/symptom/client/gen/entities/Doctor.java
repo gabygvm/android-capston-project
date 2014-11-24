@@ -1,4 +1,5 @@
-package org.magnum.symptom.client;
+package org.magnum.symptom.client.gen.entities;
+
 
 
 /**
@@ -6,15 +7,14 @@ package org.magnum.symptom.client;
  * 
  * @author Gabriela Vera
  */
-public class Patient extends Person /* implements UserDetails */{
+public class Doctor extends Person /* implements UserDetails */{
 
 	private long id;
-
-	public Patient() {
+	public Doctor() {
 		super();
 	}
 
-	public Patient(String name, String lastName, String birthDate,
+	public Doctor(String name, String lastName, String birthDate,
 			boolean isFemale, String username, String password) {
 		super(name, lastName, birthDate, isFemale, username, password);
 	}
