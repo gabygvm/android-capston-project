@@ -27,6 +27,8 @@ import butterknife.OnClick;
 //TODO important: addMedicine
 //TODO important: deleteMedicine
 //TODO important: on saved instance
+//TODO important: compare if the medicine string is already on the list.
+//Then say that this medicine is already assigned to this patient.
 
 //TODO optional: Let doc write medicine description, example take every 8 hours and so on, and show it in another list when 
 //the medicine is clicked.
@@ -54,7 +56,7 @@ public class MedicineActivity extends Activity {
 	
 	private static ArrayList<String> medNameList = new ArrayList<String>();
 	private ArrayAdapter<String> listAdapter;
-	
+	private ArrayList<Long> medIdList = new ArrayList<Long>();
 	
 	private Long _patId;
 	private UserSvcApi _svc = UserSvc.getOrShowLogin(this);
@@ -113,6 +115,7 @@ public class MedicineActivity extends Activity {
 	{
 		medListView.setVisibility(0);
 		medNameList.clear();
+		medIdList.clear();
 		
 		if (_svc != null)
 		{
@@ -134,7 +137,10 @@ public class MedicineActivity extends Activity {
 					medListView.setVisibility(1);
 					//I only receive the last receipt, so doctor knows what he made his patient take the last time.
 					for(int i = 0; i < recipe.getMedicines().size(); i++)
+					{
 						medNameList.add(recipe.getMedicines().get(i).getMedicine());
+						medIdList.add(recipe.getMedicines().get(i).getId());
+					}
 					
 					listAdapter.notifyDataSetChanged(); 
 				}

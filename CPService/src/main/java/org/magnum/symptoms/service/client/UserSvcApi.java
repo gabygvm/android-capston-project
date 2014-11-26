@@ -3,11 +3,13 @@ package org.magnum.symptoms.service.client;
 import java.util.List;
 
 import org.magnum.symptoms.service.repository.Doctor;
+import org.magnum.symptoms.service.repository.Medicine;
 import org.magnum.symptoms.service.repository.Patient;
-import org.magnum.symptoms.service.repository.PatientRecord;
 import org.magnum.symptoms.service.repository.Recipe;
 
+import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -33,6 +35,9 @@ public interface UserSvcApi {
 	public static final String DOCTOR_FIND_PATIENTS_SVC_PATH = "/doctor/search/patients";
 	public static final String DOCTOR_FIND_PATIENTS_NAME_SVC_PATH = "/doctor/search/patients/name";
 	public static final String DOCTOR_PATIENT_RECIPES_PATH = "/doctor/search/patient/lastRecord";
+	public static final String DOCTOR_PATIENT_ADD_MED_PATH = "/doctor/search/patient/lastRecord/addMed";
+	public static final String DOCTOR_PATIENT_DELETE_MED_PATH = "/doctor/search/patient/lastRecord/deleteMed";
+	
 	
 	@GET(ROLE_SVC_PATH)
 	public String getUserRole();
@@ -63,8 +68,11 @@ public interface UserSvcApi {
 	@GET(DOCTOR_PATIENT_RECIPES_PATH)
 	public Recipe getPatRecipesByPatIdAndCurrentDoc(@Query(ID_PARAMETER) long patId);
 	
+	@POST(DOCTOR_PATIENT_ADD_MED_PATH)
+	public Recipe AddMedFromRecipe(@Body Recipe recipe);
 	
-	
+	@POST(DOCTOR_PATIENT_DELETE_MED_PATH)
+	public Recipe DeleteMedFromRecipe(@Query("recipeId") long recipeId, @Query("medicineId") long medId);
 
 	/*	@GET(PATIENT_BY_USERNAME_SVC_PATH)
 	public List<Patient> getPatientByUsername(@Query(USERNAME_PARAMETER) String username);

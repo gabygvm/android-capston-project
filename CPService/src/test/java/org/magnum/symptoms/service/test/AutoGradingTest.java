@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.magnum.symptoms.service.client.SecuredRestBuilder;
 import org.magnum.symptoms.service.client.UserSvcApi;
 import org.magnum.symptoms.service.repository.Doctor;
+import org.magnum.symptoms.service.repository.Medicine;
 import org.magnum.symptoms.service.repository.Patient;
 import org.magnum.symptoms.service.repository.PatientRecord;
 import org.magnum.symptoms.service.repository.Recipe;
@@ -214,4 +215,49 @@ public class AutoGradingTest {
 		assertEquals(1, recipe.getMedicines().size());
 		assertEquals("MEDICINE01", recipe.getMedicines().get(0).getMedicine());
 	}
+	@Test
+	public void AddPatientMedToRecipe_MedInDatabase() throws Exception {
+		
+		Recipe recipe = UserDoctor01.getPatRecipesByPatIdAndCurrentDoc((long)3);
+		
+		recipe.getMedicines().add(new Medicine("medicine04"));
+		recipe = UserDoctor01.AddMedFromRecipe(recipe);
+		
+		assertEquals(2, recipe.getMedicines().size());
+		assertEquals("MEDICINE01", recipe.getMedicines().get(0).getMedicine());
+		assertEquals("MEDICINE04", recipe.getMedicines().get(1).getMedicine());
+		assertEquals(1, recipe.getMedicines().get(0).getId());	
+		assertEquals(4, recipe.getMedicines().get(1).getId());
+		recipe = UserDoctor01.DeleteMedFromRecipe(recipe.getId(), 4);
+		//TODO: delete medicine 04.
+	}
+	@Test
+	public void AddPatientMedToRecipe_MedNotInDatabase() throws Exception {
+		
+		Recipe recipe = UserDoctor01.getPatRecipesByPatIdAndCurrentDoc((long)3);
+		
+		assertEquals(1, recipe.getMedicines().size());
+		assertEquals("MEDICINE01", recipe.getMedicines().get(0).getMedicine());
+		
+		recipe.getMedicines().add(new Medicine("caramelo"));
+		recipe = UserDoctor01.AddMedFromRecipe(recipe);
+		
+		assertEquals(2, recipe.getMedicines().size());
+		assertEquals("MEDICINE01", recipe.getMedicines().get(0).getMedicine());
+		assertEquals("CARAMELO", recipe.getMedicines().get(1).getMedicine());
+		assertEquals(1, recipe.getMedicines().get(0).getId());	
+		assertEquals(6, recipe.getMedicines().get(1).getId());
+		recipe = UserDoctor01.DeleteMedFromRecipe(recipe.getId(), 6);
+		//TODO: delete caramelo.
+	}
+	@Test
+	public void DeletePatientMedFromTheRecipe() throws Exception{
+		Recipe recipe = UserDoctor01.getPatRecipesByPatIdAndCurrentDoc((long)3);
+		recipe = UserDoctor01.DeleteMedFromRecipe(recipe.getId(), 1);
+		assertEquals(0, recipe.getMedicines().size());
+		
+		recipe.getMedicines().add(new Medicine("medicine01"));
+		recipe = UserDoctor01.AddMedFromRecipe(recipe);
+	}
+	//Delete data.
 }

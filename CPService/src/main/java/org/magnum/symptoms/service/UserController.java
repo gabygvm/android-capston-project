@@ -28,8 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.magnum.symptoms.service.client.UserSvcApi;
 import org.magnum.symptoms.service.repository.Doctor;
 import org.magnum.symptoms.service.repository.DoctorRepository;
+import org.magnum.symptoms.service.repository.Medicine;
+import org.magnum.symptoms.service.repository.MedicineRepository;
 import org.magnum.symptoms.service.repository.Patient;
-import org.magnum.symptoms.service.repository.PatientRecord;
 import org.magnum.symptoms.service.repository.PatientRecordRepository;
 import org.magnum.symptoms.service.repository.PatientRepository;
 import org.magnum.symptoms.service.repository.Recipe;
@@ -39,14 +40,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit.http.Body;
+import retrofit.http.POST;
 
 @Controller
 public class UserController {
@@ -65,6 +66,10 @@ public class UserController {
 	
 	@Autowired
 	private RecipeRepository recipeRepo;
+	
+	@Autowired
+	private MedicineRepository medicineRepo;
+
 	
 	@RequestMapping(value = UserSvcApi.ROLE_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody String getUserRole(HttpServletResponse response) {
@@ -86,7 +91,6 @@ public class UserController {
 		entityMng.clear();
 		return GetUsername();
 	}
-	
 	
 	@RequestMapping(value = UserSvcApi.PATIENT_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody Patient getPatientInfo(HttpServletResponse response)
@@ -236,7 +240,6 @@ public class UserController {
 		entityMng.clear();
 		return null;
 	}
-	
 	@RequestMapping(value = UserSvcApi.DOCTOR_PATIENT_RECIPES_PATH, method = RequestMethod.GET)
 	public @ResponseBody Recipe getPatRecipesByPatIdAndCurrentDoc(@RequestParam(
 			UserSvcApi.ID_PARAMETER) long patId, HttpServletResponse response)
@@ -267,6 +270,59 @@ public class UserController {
 		return null;
 	}
 	
+	@RequestMapping(value=UserSvcApi.DOCTOR_PATIENT_ADD_MED_PATH, method=RequestMethod.POST)
+	public @ResponseBody Recipe AddMedFromRecipe(@RequestBody Recipe recipe, HttpServletResponse response){
+	
+		Recipe recipeUpdate;
+		Medicine medicine;
+		
+		recipeUpdate = recipeRepo.findOne(recipe.getId());
+		
+		for(int i = 0; i < recipe.getMedicines().size(); i++)
+		{
+			if(recipe.getMedicines().get(i).getId() == 0)
+			{
+				medicine = medicineRepo.findByMedicine(recipe.getMedicines().get(i).getMedicine().toUpperCase());
+				if(medicine == null)
+					medicineRepo.saveAndFlush(recipe.getMedicines().get(i));
+				else
+					recipe.getMedicines().set(i, medicine);
+			}
+		}
+		recipeUpdate.setMedicines(recipe.getMedicines());
+		recipeUpdate = recipeRepo.saveAndFlush(recipeUpdate);
+		recipeUpdate.setPatRecord(null);
+		entityMng.clear();
+		response.setStatus(HttpServletResponse.SC_OK);
+		return recipeUpdate;
+	}
+	
+	@RequestMapping(value=UserSvcApi.DOCTOR_PATIENT_DELETE_MED_PATH, method=RequestMethod.POST)
+	public @ResponseBody Recipe DeleteMedFromRecipe(
+			@RequestParam("recipeId") long recipeId, @RequestParam("medicineId") long medId,
+			HttpServletResponse response){
+		
+		Recipe recipeUpdate = null;
+		List<Medicine> medList;
+		List<Recipe> recipeNew;
+		
+		recipeUpdate = recipeRepo.findOne(recipeId);
+		for(int i = 0; i < recipeUpdate.getMedicines().size(); i++)
+		{
+			if(recipeUpdate.getMedicines().get(i).getId() == medId)
+				recipeUpdate.getMedicines().remove(i);
+		}
+		recipeUpdate = recipeRepo.saveAndFlush(recipeUpdate);
+		recipeUpdate.setPatRecord(null);
+		
+		entityMng.clear();
+		
+		
+		medList = medicineRepo.findAll();
+		recipeNew = recipeRepo.findAll();
+		response.setStatus(HttpServletResponse.SC_OK);
+		return recipeUpdate;
+	}
 	
 	/*@RequestMapping(value = UserSvcApi.DOCTOR_BY_USERNAME_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody List<Doctor> getDoctorByUsername(
