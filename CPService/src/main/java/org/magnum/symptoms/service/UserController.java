@@ -19,7 +19,6 @@
 package org.magnum.symptoms.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -45,9 +44,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import retrofit.http.Body;
-import retrofit.http.POST;
 
 @Controller
 public class UserController {
@@ -303,8 +299,6 @@ public class UserController {
 			HttpServletResponse response){
 		
 		Recipe recipeUpdate = null;
-		List<Medicine> medList;
-		List<Recipe> recipeNew;
 		
 		recipeUpdate = recipeRepo.findOne(recipeId);
 		for(int i = 0; i < recipeUpdate.getMedicines().size(); i++)
@@ -317,9 +311,6 @@ public class UserController {
 		
 		entityMng.clear();
 		
-		
-		medList = medicineRepo.findAll();
-		recipeNew = recipeRepo.findAll();
 		response.setStatus(HttpServletResponse.SC_OK);
 		return recipeUpdate;
 	}

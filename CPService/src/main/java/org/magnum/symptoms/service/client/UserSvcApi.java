@@ -3,7 +3,6 @@ package org.magnum.symptoms.service.client;
 import java.util.List;
 
 import org.magnum.symptoms.service.repository.Doctor;
-import org.magnum.symptoms.service.repository.Medicine;
 import org.magnum.symptoms.service.repository.Patient;
 import org.magnum.symptoms.service.repository.Recipe;
 
