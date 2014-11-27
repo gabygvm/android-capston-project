@@ -21,6 +21,8 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+
+//TODO:Save photo in file / server data.
 public class DoctorActivity extends Activity {	
 	
 	static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -33,17 +35,21 @@ public class DoctorActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_doctor);
 		
-		_imageView = (ImageView) findViewById(R.id.imageView1);
+		_imageView = (ImageView) findViewById(R.id.imageView1Doc);
 		
 		ButterKnife.inject(this);
+		
+		if(savedInstanceState != null){
+			_imageView.setImageBitmap(_imageBitmap);
+		}
 		
 		getDoctorInfo();
 	}
 	
 	@Override
-	protected void onResume() {
-		super.onResume();
-	}
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+	};
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="org.magnum.symptom.client.gen.activities.DoctorActivity" >
 
-  <TextView
+    <TextView
         android:id="@+id/NameTxtV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -79,4 +79,5 @@
         android:layout_alignRight="@+id/imageView1Doc"
         android:layout_marginRight="63dp"
         android:text="@string/changePic" />
+
 </RelativeLayout>
