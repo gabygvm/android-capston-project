@@ -1,9 +1,12 @@
 package org.magnum.symptom.client.gen.activities;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.magnum.symptom.client.R;
@@ -11,14 +14,17 @@ import org.magnum.symptom.client.gen.CallableTask;
 import org.magnum.symptom.client.gen.TaskCallback;
 import org.magnum.symptom.client.gen.UserSvc;
 import org.magnum.symptom.client.gen.UserSvcApi;
+import org.magnum.symptom.client.gen.entities.Doctor;
 import org.magnum.symptom.client.gen.entities.Patient;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,15 +37,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-//TODO important: go to checkIns
 //TODO important: go to medicines
 //TODO important: on saved instance.
 //TODO important: save picture in memory.
-
-
-//TODO optional: Save picture data in database... is this too much data?
-//TODO optional: when logged in as a doctor, get patient's picture from database.
-
 
 
 public class PatientActivity extends Activity {
@@ -75,7 +75,9 @@ public class PatientActivity extends Activity {
 	protected ImageView imageView;
 	
 	
-	static final int REQUEST_IMAGE_CAPTURE = 1;
+	private static final int REQUEST_IMAGE_CAPTURE = 200;
+	private static final int CHECK_IN_REQ_CODE = 201;
+	
 	final UserSvcApi svc = UserSvc.getOrShowLogin(this);
 	
 	private String mCurrentPhotoPath;
@@ -83,7 +85,10 @@ public class PatientActivity extends Activity {
 	
 	private Boolean _DoctorLoggedIn;
 	private Long _patId;
+	private Long currentPatId;
 	
+	private List<Long> docsId;
+	private int checkInCounter = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -103,15 +108,26 @@ public class PatientActivity extends Activity {
 			imageView.setVisibility(View.GONE);
 		}
 		else
+		{
+			recipeButton.setVisibility(View.INVISIBLE);
 			_patId = Long.MAX_VALUE;
+		}
 		
+		docsId = new ArrayList<Long>();
 		getPatientInfo();
 	}
 	
 	@OnClick(R.id.checkInButton)
 	public void onClickCheckInButton(){
-		Intent checkInIntent = new Intent(PatientActivity.this, CheckInActivity.class);
-		startActivity(checkInIntent);
+		if(_DoctorLoggedIn == false){
+			checkInCounter = 0;
+			getPatientDoctorsIdAndStartCheckingIn();
+		}
+		else{
+			Intent intent = new Intent(PatientActivity.this, DoctorPatientCheckInList.class);
+			intent.putExtra("patientId", _patId);
+			startActivity(intent);
+		}
 	}
 	@OnClick(R.id.alarmsButton)
 	public void onClickAlarmsButton(){
@@ -124,7 +140,6 @@ public class PatientActivity extends Activity {
 	}
 	@OnClick(R.id.recipeButton)
 	public void onClickRecipePicButton(){
-		//TODO: add case when patient is the one logged in, so it goes to the last recipe active.
 		Intent recipeIntent;
 		if(_DoctorLoggedIn)
 		{
@@ -141,8 +156,24 @@ public class PatientActivity extends Activity {
 	    if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 	        Bundle extras = data.getExtras();
 	        imageBitmap = (Bitmap) extras.get("data");
-	        
 	        imageView.setImageBitmap(imageBitmap);
+	        
+	        
+	        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+	        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+	        byte[] byteArray = stream.toByteArray();
+	        int length = byteArray.length;
+	        String encodedImage = Base64.encodeToString(byteArray, Base64.URL_SAFE);
+	        SavePatientPicture(encodedImage);
+	    }
+	    else if(requestCode == CHECK_IN_REQ_CODE){
+	    	checkInCounter++;
+	    	if(checkInCounter < docsId.size())
+	    	{
+	    		Intent checkInIntent = new Intent(PatientActivity.this, CheckInActivity.class);
+	    		checkInIntent.putExtra("docId", docsId.get(checkInCounter));
+	    		startActivityForResult(checkInIntent, CHECK_IN_REQ_CODE);
+	    	}
 	    }
 	}
 	
@@ -165,23 +196,31 @@ public class PatientActivity extends Activity {
 				@Override
 				public void success(Patient patient) {
 					//Paint here the info.
-					//TextView text = (TextView) findViewById(R.id.NameTxtV);
-					nameTextView.setText("Name: " + patient.getName());//text.setText("Name: " + patient.getName());
+					nameTextView.setText("Name: " + patient.getName());
 					
-					//text = (TextView) findViewById(R.id.LastNameTxtV);
-					lastNameTextView.setText("Last Name: " + patient.getLastName()); //text.setText("Last Name: " + patient.getLastName());
+					lastNameTextView.setText("Last Name: " + patient.getLastName());
 					
-					//text = (TextView) findViewById(R.id.GenderTxtV);
 					if(patient.getIsFemale() == true)
-						genderTextView.setText("Gender: " + "Female"); //text.setText("Gender: " + "Female");
+						genderTextView.setText("Gender: " + "Female");
 					else
-						genderTextView.setText("Gender: " + "Male");//text.setText("Gender: " + "Male");
+						genderTextView.setText("Gender: " + "Male");
 					
-					//text = (TextView) findViewById(R.id.BirthdayTxtV);
-					birthdayTextView.setText("Birthdate: " + patient.getBirthDate());//text.setText("Birthdate: " + patient.getBirthDate());
+					birthdayTextView.setText("Birthdate: " + patient.getBirthDate());
 					
-					//text = (TextView) findViewById(R.id.MedicalRecordNameTxtV);
-					MedRecordTextView.setText("Medical Record: " + Long.toString(patient.getId()));//text.setText("Medical Record: " + Long.toString(patient.getId()));
+					MedRecordTextView.setText("Medical Record: " + Long.toString(patient.getId()));
+					currentPatId = patient.getId();
+					
+					/*if(patient.getImage() != null){
+						imageBitmap = BitmapFactory.decodeByteArray(patient.getImage() , 0, patient.getImage().length);
+						imageView.setImageBitmap(imageBitmap);
+					}*/
+					/*if(patient.getImageBase64() != null){
+						byte[] image = Base64.decode(patient.getImageBase64(), Base64.URL_SAFE);
+						 int length = image.length;
+						imageBitmap = (Bitmap)BitmapFactory.decodeByteArray(image, 0, image.length);
+						imageView.setImageBitmap(imageBitmap);
+						imageView.setVisibility(View.VISIBLE);
+					}*/
 				}
 	
 				@Override
@@ -191,6 +230,81 @@ public class PatientActivity extends Activity {
 					Toast.makeText(
 							PatientActivity.this,
 							"Failed Getting user info",
+							Toast.LENGTH_SHORT).show();
+				}
+			});
+		}
+	}
+	
+	private void SavePatientPicture(final String photo){
+		if (svc != null)
+		{
+			CallableTask.invoke(new Callable<Patient>(){
+			
+				@Override
+				public Patient call() throws Exception {
+					return svc.SavePatientPhoto(photo);
+				}
+				
+			}, new TaskCallback<Patient>(){
+				
+				@Override
+				public void success(Patient patient) {
+					Toast.makeText(
+							PatientActivity.this,
+							"Photo Saved",
+							Toast.LENGTH_SHORT).show();
+				}
+	
+				@Override
+				public void error(Exception e) {					
+					Toast.makeText(
+							PatientActivity.this,
+							"Failed Saving Photo",
+							Toast.LENGTH_SHORT).show();
+				}
+			});
+		}
+	}
+	
+	private void getPatientDoctorsIdAndStartCheckingIn(){
+		if (svc != null)
+		{
+			docsId.clear();
+			CallableTask.invoke(new Callable<List<Doctor>>(){
+			
+				@Override
+				public List<Doctor> call() throws Exception {
+					return svc.getDoctorsFromPatientId(currentPatId);
+				}
+				
+			}, new TaskCallback<List<Doctor>>(){
+				
+				@Override
+				public void success(List<Doctor> doc) {
+					if(doc.size() != 0)
+					{
+						Intent checkInIntent = new Intent(PatientActivity.this, CheckInActivity.class);
+						
+						for(int i = 0; i < doc.size(); i++)
+							docsId.add(doc.get(i).getId());
+						
+						checkInIntent.putExtra("docId", docsId.get(0));
+						
+						startActivityForResult(checkInIntent, CHECK_IN_REQ_CODE);
+					}else{
+						Toast.makeText(
+								PatientActivity.this,
+								"No doctor found for this patient",
+								Toast.LENGTH_SHORT).show();
+					}
+				}
+	
+				@Override
+				public void error(Exception e) {
+					Toast.makeText(
+							PatientActivity.this,
+							"Failed Getting patient's doctors",
 							Toast.LENGTH_SHORT).show();
 				}
 			});

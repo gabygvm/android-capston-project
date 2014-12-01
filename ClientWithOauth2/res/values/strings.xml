@@ -38,9 +38,10 @@
     <string name="setTime3">Set Reminder 3</string>
     <string name="setTime4">Set Reminder 4</string>
     <string name="title_activity_doctor_patients">Patients Search</string>
-    
     <string name="title_activity_medicine">Patients Medicines</string>
-	<string name="addMedInstruction">To add a medicine write it down here and press Done</string>
+    <string name="addMedInstruction">To add a medicine write it down here and press Done</string>
     <string name="deleteMedInstruction">To delete a medicine select it. When finished deleting press Done</string>
-	
+    <string name="title_activity_date_and_time_of_med">Date And Time Of Medicine</string>
+    <string name="title_activity_doctor_patient_check_in_list">DoctorPatientCheckInList</string>
+
 </resources>

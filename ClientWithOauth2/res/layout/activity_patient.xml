@@ -88,7 +88,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="31dp"
         android:text="@string/recipe"
-        android:textColor="@color/royal_blue" />
+         />
 
     <Button
         android:id="@+id/checkInButton"

@@ -7,6 +7,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.widget.Toast;
 
 public class CustomAlarmReceiver extends BroadcastReceiver {
@@ -24,11 +26,12 @@ public class CustomAlarmReceiver extends BroadcastReceiver {
 			Toast.makeText(context, "Intent Detected number" + String.valueOf(alarmId), Toast.LENGTH_LONG).show();
 			NotificationManager notificationManager = (NotificationManager) context
 					.getSystemService(Context.NOTIFICATION_SERVICE);
-	
+
 			Notification.Builder mBuilder = new Notification.Builder(context)
 					.setSmallIcon(R.drawable.heart_beat)
 					.setContentTitle("Symptom Manager")
 					.setContentText("Check In Time. Go!");
+			
 	
 			Intent notificationIntent = new Intent(context, CheckInActivity.class);
 			notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP

@@ -15,6 +15,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -150,7 +152,7 @@ public class DoctorPatientsActivity extends Activity {
 		super.onDestroy();
 	}
 	
-	/*
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -168,7 +170,7 @@ public class DoctorPatientsActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}*/
+	}
 }
 
 

@@ -18,12 +18,21 @@ public class CheckIn {
 		this.patRecord = patRecord;
 		this.answers = answers;
 	}
+	
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
+	
 	public PatientRecord getPatRecord() {
 		return patRecord;
 	}
 	public void setPatRecord(PatientRecord patRecord) {
 		this.patRecord = patRecord;
 	}
+	
 	public List<Answer> getAnswers() {
 		return answers;
 	}

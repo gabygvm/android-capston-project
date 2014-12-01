@@ -16,6 +16,10 @@ public class Person {
 	private String username;
 	private String password;
 
+	private byte[] image;
+	
+	private String imageBase64;
+	
 	public Person() {
 		super();
 	}
@@ -78,4 +82,22 @@ public class Person {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
+
+	public String getImageBase64() {
+		return imageBase64;
+	}
+
+	public void setImageBase64(String imageBase64) {
+		this.imageBase64 = imageBase64;
+	}
+	
+	
 }

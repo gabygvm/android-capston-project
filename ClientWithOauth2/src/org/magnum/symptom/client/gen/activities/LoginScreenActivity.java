@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import butterknife.ButterKnife;
@@ -40,12 +41,18 @@ public class LoginScreenActivity extends Activity {
 	@InjectView(R.id.server)
 	protected EditText server_;
 
+	//private UserSvcApi svc;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login_screen);
 
 		ButterKnife.inject(this);
+		server_.setVisibility(View.INVISIBLE);
+		
+		//if(svc != null)
+		//	getUserRoleAnOpenNextActivity(svc);
 	}
 
 	@OnClick(R.id.loginButton)
@@ -55,8 +62,12 @@ public class LoginScreenActivity extends Activity {
 		String server = "https://192.168.56.1:8443";//server_.getText().toString();
 
 		final UserSvcApi svc = UserSvc.init(server, user, pass);
-		
-		
+		//svc = UserSvc.init(server, user, pass);
+		getUserRoleAnOpenNextActivity(svc);
+	}
+	
+	private void getUserRoleAnOpenNextActivity(final UserSvcApi svc)
+	{
 		CallableTask.invoke(new Callable<String>(){
 			
 			@Override
