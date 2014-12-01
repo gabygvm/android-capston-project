@@ -2,6 +2,8 @@ package org.magnum.symptoms.service.client;
 
 import java.util.List;
 
+import org.magnum.symptoms.service.repository.Answer;
+import org.magnum.symptoms.service.repository.CheckIn;
 import org.magnum.symptoms.service.repository.Doctor;
 import org.magnum.symptoms.service.repository.Patient;
 import org.magnum.symptoms.service.repository.Recipe;
@@ -28,7 +30,12 @@ public interface UserSvcApi {
 	
 	public static final String PATIENT_SVC_PATH = "/patient";
 	public static final String PATIENT_BY_USERNAME_SVC_PATH = "/patient/search/findByUsername";
-
+	public static final String PATIENT_DOCTORS_PATH = "/patient/{id}/search/Doctor/all";
+	public static final String PATIENT_LAST_RECIPE_FROM_DOC_PATH = "/patient/recipes/doctorId/last";
+	public static final String PATIENT_CHECKIN_TO_DOC = "/patient/patRecord/checkin";
+	public static final String PATIENT_PHOTO = "/patient/photo/update";
+	public static final String PATIENT_IMAGE_SVC_PATH = "/patient/{id}/photo/update";
+	
 	public static final String DOCTOR_SVC_PATH = "/doctor";
 	public static final String DOCTOR_BY_USERNAME_SVC_PATH = "/doctor/search/findByUsername";
 	public static final String DOCTOR_FIND_PATIENTS_SVC_PATH = "/doctor/search/patients";
@@ -36,7 +43,9 @@ public interface UserSvcApi {
 	public static final String DOCTOR_PATIENT_RECIPES_PATH = "/doctor/search/patient/lastRecord";
 	public static final String DOCTOR_PATIENT_ADD_MED_PATH = "/doctor/search/patient/lastRecord/addMed";
 	public static final String DOCTOR_PATIENT_DELETE_MED_PATH = "/doctor/search/patient/lastRecord/deleteMed";
+	public static final String DOCTOR_PATIENT_CHECKINS_PATH = "/doctor/search/patient/checkIn";
 	
+	public static final String DOCTOR_PATIENT_CHECKIN_PATH = "/doctor/search/patient/checkIn/{id}";
 	
 	@GET(ROLE_SVC_PATH)
 	public String getUserRole();
@@ -51,6 +60,21 @@ public interface UserSvcApi {
 	@GET(PATIENT_SVC_PATH + "/{id}")
 	public Patient getPatientById(@Path(ID_PARAMETER) long id);
 
+	@GET(PATIENT_DOCTORS_PATH)
+	public List<Doctor> getDoctorsFromPatientId(@Path(ID_PARAMETER) long id);
+	
+	@GET(PATIENT_LAST_RECIPE_FROM_DOC_PATH)
+	public Recipe getCurrentPatientLastRecipeByDoctorId(@Query("docId")long docId);
+	
+	@POST(PATIENT_CHECKIN_TO_DOC)
+	public CheckIn AddPatientCheckIn(@Query("patRecordId") long patRecordId, @Body List<Answer> answers);
+	
+	@POST(PATIENT_PHOTO)
+	public Patient SavePatientPhoto(@Body String photo);
+	
+	@GET(PATIENT_IMAGE_SVC_PATH)
+	public byte[] getPatientImageById(@Path(UserSvcApi.ID_PARAMETER) long id);
+	
 	
 	@GET(DOCTOR_SVC_PATH)
 	public Doctor getDoctorInfo();
@@ -67,19 +91,20 @@ public interface UserSvcApi {
 	@GET(DOCTOR_PATIENT_RECIPES_PATH)
 	public Recipe getPatRecipesByPatIdAndCurrentDoc(@Query(ID_PARAMETER) long patId);
 	
+	@GET(DOCTOR_PATIENT_CHECKINS_PATH)
+	public List<CheckIn> getPatCheckInsForCurrentDoc(@Query(ID_PARAMETER) long patId);
+	
+	@GET(DOCTOR_PATIENT_CHECKIN_PATH)
+	public CheckIn getPatCheckInByCheckInId(@Path(ID_PARAMETER) long checkInId);
+	
+	
 	@POST(DOCTOR_PATIENT_ADD_MED_PATH)
 	public Recipe AddMedFromRecipe(@Body Recipe recipe);
 	
 	@POST(DOCTOR_PATIENT_DELETE_MED_PATH)
 	public Recipe DeleteMedFromRecipe(@Query("recipeId") long recipeId, @Query("medicineId") long medId);
 
-	/*	@GET(PATIENT_BY_USERNAME_SVC_PATH)
-	public List<Patient> getPatientByUsername(@Query(USERNAME_PARAMETER) String username);
-	*/
-	/*@GET(DOCTOR_BY_USERNAME_SVC_PATH)
-	public List<Doctor> getDoctorByUsername(@Query(USERNAME_PARAMETER) String username);
 	
-	@GET(DOCTOR_FIND_PAT_RECORDS_SVC_PATH)
-	public List<PatientRecord> getPatientRecordByDoctor();
-	*/
+	
+	
 }

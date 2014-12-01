@@ -3,6 +3,7 @@ package org.magnum.symptoms.service.repository;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +23,7 @@ public class CheckIn {
 	@JoinColumn(name = "patRecord_id")
 	private PatientRecord patRecord;
 	
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	private List<Answer> answers;
 
 	
@@ -35,16 +36,25 @@ public class CheckIn {
 		this.patRecord = patRecord;
 		this.answers = answers;
 	}
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
+	
 	public PatientRecord getPatRecord() {
 		return patRecord;
 	}
 	public void setPatRecord(PatientRecord patRecord) {
 		this.patRecord = patRecord;
 	}
+
 	public List<Answer> getAnswers() {
 		return answers;
 	}
 	public void setAnswers(List<Answer> answers) {
 		this.answers = answers;
 	}
+	
 }

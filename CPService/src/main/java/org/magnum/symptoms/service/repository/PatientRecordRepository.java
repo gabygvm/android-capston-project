@@ -14,8 +14,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PatientRecordRepository extends JpaRepository<PatientRecord, Long>  {
+	
 	@Query(value="from PatientRecord pr where pr.doctor.id = :docId")
 	public List<PatientRecord> findByDoctorId(@Param("docId") long docId);
-	//public List<Patient> findByPatient(@Param(UserSvcApi.USERNAME_PARAMETER)String username);
 	
+	public PatientRecord findByDoctorIdAndPatientId(@Param("doctor_Id") long docId, @Param("patient_Id") long patId);
 }

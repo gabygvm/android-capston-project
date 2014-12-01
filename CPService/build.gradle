@@ -52,7 +52,7 @@ dependencies {
     compile("org.springframework.security.oauth:spring-security-oauth2:2.0.0.RC2")
     compile("org.springframework.security.oauth:spring-security-oauth2-javaconfig:1.0.0.M1")
     
-    compile("org.hsqldb:hsqldb")
+    compile("org.hsqldb:hsqldb:2.3.2")‏
     
     compile("com.google.guava:guava:17.0")
     compile("org.apache.commons:commons-lang3:3.3.2")

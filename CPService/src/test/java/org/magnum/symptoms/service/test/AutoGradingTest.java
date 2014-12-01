@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import io.magnum.autograder.junit.Rubric;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Ignore;
@@ -11,6 +12,10 @@ import org.junit.Test;
 //import org.magnum.symptoms.service.TestData;
 import org.magnum.symptoms.service.client.SecuredRestBuilder;
 import org.magnum.symptoms.service.client.UserSvcApi;
+import org.magnum.symptoms.service.repository.Answer;
+import org.magnum.symptoms.service.repository.AnswerType;
+import org.magnum.symptoms.service.repository.AnswerValue;
+import org.magnum.symptoms.service.repository.CheckIn;
 import org.magnum.symptoms.service.repository.Doctor;
 import org.magnum.symptoms.service.repository.Medicine;
 import org.magnum.symptoms.service.repository.Patient;
@@ -72,6 +77,15 @@ public class AutoGradingTest {
 	.setLoginEndpoint(TEST_URL + UserSvcApi.TOKEN_PATH)
 	.setUsername("doctor01").setPassword("doc01")
 	.setClientId(CLIENT_ID).build().create(UserSvcApi.class);
+	
+	private UserSvcApi UserPatient01 = new SecuredRestBuilder()
+	.setClient(new ApacheClient(UnsafeHttpsClient.createUnsafeClient()))
+	.setEndpoint(TEST_URL)
+	.setLoginEndpoint(TEST_URL + UserSvcApi.TOKEN_PATH)
+	.setUsername("patient01").setPassword("pat01")
+	.setClientId(CLIENT_ID).build().create(UserSvcApi.class);
+
+	
 	
 	@Rubric(value = "Video data is preserved", goal = "The goal of this evaluation is to ensure that your Spring controller(s) "
 			+ "properly unmarshall Video objects from the data that is sent to them "
@@ -229,7 +243,6 @@ public class AutoGradingTest {
 		assertEquals(1, recipe.getMedicines().get(0).getId());	
 		assertEquals(4, recipe.getMedicines().get(1).getId());
 		recipe = UserDoctor01.DeleteMedFromRecipe(recipe.getId(), 4);
-		//TODO: delete medicine 04.
 	}
 	@Test
 	public void AddPatientMedToRecipe_MedNotInDatabase() throws Exception {
@@ -248,7 +261,6 @@ public class AutoGradingTest {
 		assertEquals(1, recipe.getMedicines().get(0).getId());	
 		assertEquals(6, recipe.getMedicines().get(1).getId());
 		recipe = UserDoctor01.DeleteMedFromRecipe(recipe.getId(), 6);
-		//TODO: delete caramelo.
 	}
 	@Test
 	public void DeletePatientMedFromTheRecipe() throws Exception{
@@ -259,5 +271,62 @@ public class AutoGradingTest {
 		recipe.getMedicines().add(new Medicine("medicine01"));
 		recipe = UserDoctor01.AddMedFromRecipe(recipe);
 	}
+	@Test
+	public void GetDoctorFromPatientId(){
+		List<Doctor> doctorList = UserPatient04.getDoctorsFromPatientId(5);
+		
+		assertEquals(2, doctorList.size());
+		assertEquals("DOCNAME01", doctorList.get(0).getName());
+		assertEquals("DOCNAME02", doctorList.get(1).getName());
+	}
+	@Test
+	public void GetPatientLastRecipeByDoctorId(){
+		Recipe recipe = UserPatient01.getCurrentPatientLastRecipeByDoctorId(1);
+		
+		assertEquals(1, recipe.getMedicines().size());
+		assertEquals("MEDICINE01", recipe.getMedicines().get(0).getMedicine());
+		assertEquals(1, recipe.getPatRecord().getId());
+	}
+	
+	@Test
+	public void AddPatientRecipeAnswerTypeAndReturnItFromServer(){
+		
+		List<Answer> answerList = new ArrayList<Answer>();
+		
+		answerList.add(new Answer(AnswerType.PAIN_SORE, AnswerValue.MODERATE, null, null));
+		answerList.add(new Answer(AnswerType.PAIN_MED_SPECIFIC, AnswerValue.YES, "30-11-2014/1:59", null));
+		answerList.add(new Answer(AnswerType.PAIN_STOP_EATING_DRINKING, AnswerValue.I_CANT_EAT, null, null));
+		
+		CheckIn checkIn = UserPatient01.AddPatientCheckIn(1, answerList);
+		assertEquals(1, checkIn.getId());
+		assertEquals(3, checkIn.getAnswers().size());
+		assertEquals(1, checkIn.getAnswers().get(0).getId());
+		assertEquals(2, checkIn.getAnswers().get(1).getId());
+		assertEquals(3, checkIn.getAnswers().get(2).getId());
+		
+		assertEquals(AnswerType.PAIN_SORE, checkIn.getAnswers().get(0).getAnswerType());
+		assertEquals(AnswerValue.MODERATE, checkIn.getAnswers().get(0).getAnswerValue());
+		assertEquals(null, checkIn.getAnswers().get(0).getDateAndTimeTaken());
+		
+		assertEquals(AnswerType.PAIN_MED_SPECIFIC, checkIn.getAnswers().get(1).getAnswerType());
+		assertEquals(AnswerValue.YES, checkIn.getAnswers().get(1).getAnswerValue());
+		assertEquals("30-11-2014/1:59", checkIn.getAnswers().get(1).getDateAndTimeTaken());
+		
+		assertEquals(AnswerType.PAIN_STOP_EATING_DRINKING, checkIn.getAnswers().get(2).getAnswerType());
+		assertEquals(AnswerValue.I_CANT_EAT, checkIn.getAnswers().get(2).getAnswerValue());
+		assertEquals(null, checkIn.getAnswers().get(2).getDateAndTimeTaken());
+		
+		List<CheckIn> checkInList = UserDoctor01.getPatCheckInsForCurrentDoc(3);
+		
+		assertEquals(1, checkInList.size());
+		assertEquals(1, checkInList.get(0).getId());
+		
+		CheckIn oneCheckIn = UserDoctor01.getPatCheckInByCheckInId(1);
+		assertEquals(AnswerType.PAIN_SORE, checkIn.getAnswers().get(0).getAnswerType());
+		assertEquals(AnswerValue.MODERATE, checkIn.getAnswers().get(0).getAnswerValue());
+		assertEquals(null, checkIn.getAnswers().get(0).getDateAndTimeTaken());
+		
+	}
+	
 	//Delete data.
 }
