@@ -1,5 +1,5 @@
 # android-capston-project
-This was created as the capston project for the first version of Coursera's android specialization.
+This was created in 2014 as the capston project for the first version of Coursera's android specialization. Recently imported from my bitbucket repository.
 
 To use all the tools we learned during the courses.
 
@@ -11,5 +11,5 @@ As an electronic engineer, with many years in firmware, this was a refreshing ex
 
 Hope to eventually do more in this field!
 
-XD it has a (very) basic UX, and for the course we had to update a video of the app working.
+It has a (very) basic UX, and for the course we had to update a video of the app working.
 Youtube: https://youtu.be/VDx_PWRaR40
